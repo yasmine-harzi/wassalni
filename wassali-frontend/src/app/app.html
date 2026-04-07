@@ -1,0 +1,12 @@
+<div style="text-align: center; font-family: sans-serif; margin-top: 50px;">
+  <h1>🌟 Mon Application Full-Stack</h1>
+  
+  <div *ngFor="let user of data">
+    <div style="border: 1px solid #ccc; padding: 10px; display: inline-block; border-radius: 8px;">
+      <h2>Bienvenue, {{ user.Full_Name }}</h2>
+      <p>ID : <strong>{{ user.ID }}</strong></p>
+    </div>
+  </div>
+
+  <p *ngIf="data.length === 0">En attente des données de MySQL...</p>
+</div>
