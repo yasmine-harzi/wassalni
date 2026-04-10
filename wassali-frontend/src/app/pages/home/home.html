@@ -1,0 +1,27 @@
+<div class="home-container">
+  <h1>Bienvenue sur Wassalni</h1>
+  <p>Choisissez votre profil pour continuer</p>
+
+  <div class="roles-grid">
+    <div class="role-card" (click)="goToRegister('client')">
+      <div class="icon">👤</div>
+      <h3>Client</h3>
+      <p>Je souhaite commander des produits</p>
+      <button>S'inscrire</button>
+    </div>
+
+    <div class="role-card" (click)="goToRegister('vendeur')">
+      <div class="icon">🏪</div>
+      <h3>Vendeur</h3>
+      <p>Je souhaite vendre mes produits</p>
+      <button>Ouvrir ma boutique</button>
+    </div>
+
+    <div class="role-card" (click)="goToRegister('coursier')">
+      <div class="icon">🚴</div>
+      <h3>Coursier</h3>
+      <p>Je souhaite livrer des commandes</p>
+      <button>Devenir livreur</button>
+    </div>
+  </div>
+</div>

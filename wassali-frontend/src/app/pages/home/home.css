@@ -1,0 +1,49 @@
+.home-container {
+  text-align: center;
+  padding: 50px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.roles-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.role-card {
+  background: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  padding: 30px;
+  width: 250px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.role-card:hover {
+  transform: translateY(-10px);
+  border-color: #007bff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.icon {
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.role-card:hover button {
+  background-color: #0056b3;
+}

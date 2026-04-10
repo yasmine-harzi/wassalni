@@ -1,0 +1,49 @@
+<div class="register-container">
+  <h2>Inscription Coursier</h2>
+  
+  <form [formGroup]="coursierForm" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nom</label>
+        <input type="text" formControlName="nom" placeholder="Ex: Ben Ali">
+      </div>
+      <div class="form-group">
+        <label>Prénom</label>
+        <input type="text" formControlName="prenom" placeholder="Ex: Ahmed">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Email professionnel</label>
+      <input type="email" formControlName="email">
+    </div>
+
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" formControlName="password">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Type de Véhicule</label>
+        <select formControlName="vehicule">
+          <option value="moto">Moto / Scooter</option>
+          <option value="velo">Vélo</option>
+          <option value="voiture">Voiture</option>
+          <option value="camionnette">Camionnette</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>N° Permis / CIN</label>
+        <input type="text" formControlName="permis" placeholder="Numéro officiel">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Zone de livraison (Ville)</label>
+      <input type="text" formControlName="adresse" placeholder="Ex: Tunis, Ariana...">
+    </div>
+
+    <button type="submit" [disabled]="!coursierForm.valid">Devenir Coursier</button>
+  </form>
+</div>

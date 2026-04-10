@@ -1,0 +1,78 @@
+/* Conteneur principal qui centre le formulaire */
+.form-container {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #e63946; /* Ligne rouge en haut */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2 {
+    color: #e63946; /* Rouge */
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+/* Style des groupes de saisie */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box; /* Très important pour le padding */
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #e63946; /* Devient rouge au clic */
+    box-shadow: 0 0 5px rgba(230, 57, 70, 0.2);
+}
+
+/* Le bouton d'envoi */
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: #e63946; /* Rouge */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #c12a36; /* Rouge plus foncé au survol */
+}
+
+button:disabled {
+    background-color: #ffb3b8;
+    cursor: not-allowed;
+}
+
+/* Petits messages d'erreur */
+.error-text {
+    color: #e63946;
+    font-size: 12px;
+    margin-top: 5px;
+}
