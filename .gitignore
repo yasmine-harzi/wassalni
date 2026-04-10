@@ -1,0 +1,12 @@
+# Dépendances et dossiers lourds
+**/node_modules/
+**/.angular/
+**/dist/
+**/__pycache__/
+**/venv/
+**/env/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
