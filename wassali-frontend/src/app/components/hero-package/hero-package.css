@@ -1,0 +1,54 @@
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+.package {
+  font-size: 90px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.package:hover {
+  transform: scale(1.1);
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+button {
+  padding: 10px 15px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+.particles {
+  margin-top: 20px;
+  opacity: 0;
+  transition: 0.4s;
+}
+
+.particles.active {
+  opacity: 1;
+}

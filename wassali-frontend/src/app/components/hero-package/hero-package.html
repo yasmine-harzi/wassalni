@@ -1,0 +1,22 @@
+<section class="hero">
+
+  <div class="logo">Wassali</div>
+
+  <div class="package" (click)="openPackage()">
+    📦
+  </div>
+
+  <h1>Fast. Secure. Effortless delivery.</h1>
+
+  <p>Send and track your packages in seconds.</p>
+
+  <div class="actions">
+    <input placeholder="Track your package..." />
+    <button>Send Package</button>
+  </div>
+
+  <div class="particles" [class.active]="opened">
+    <span *ngFor="let p of particles">•</span>
+  </div>
+
+</section>

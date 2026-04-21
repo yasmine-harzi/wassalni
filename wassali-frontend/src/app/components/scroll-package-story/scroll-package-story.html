@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Six Faces / Walking The Cow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  </head>
+    
+  <body>
+  <div id="scene">
+  <div id="cube">
+    <div class="face" data-face="top" data-i="0"><span class="face-ph">TOP</span></div>
+    <div class="face" data-face="front" data-i="1"><span class="face-ph">FRONT</span></div>
+    <div class="face" data-face="right" data-i="2"><span class="face-ph">RIGHT</span></div>
+    <div class="face" data-face="back" data-i="3"><span class="face-ph">BACK</span></div>
+    <div class="face" data-face="left" data-i="4"><span class="face-ph">LEFT</span></div>
+    <div class="face" data-face="bottom" data-i="5"><span class="face-ph">BOTTOM</span></div>
+  </div>
+</div>
+
+<div id="hud">
+  <div id="hud_pct">000%</div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="prog_fill"></div>
+  </div>
+  <div class="scene-label" id="scene_name">DESCENT</div>
+</div>
+
+<button id="theme_toggle" aria-label="Toggle light/dark mode">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+  </svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
+  </svg>
+</button>
+
+<div id="scene_strip">
+  <a href="#s0" class="scene-dot active"></a>
+  <a href="#s1" class="scene-dot"></a>
+  <a href="#s2" class="scene-dot"></a>
+  <a href="#s3" class="scene-dot"></a>
+</div>
+
+<div id="face_caption">
+  <div id="face_caption_num">01</div>
+  <div id="face_caption_name">Wassali</div>
+</div>
+
+<div id="scroll_container">
+
+  <section id="s0">
+    <div class="text-card">
+      <div class="tag">Wassali — Secure Delivery System</div>
+      <h1>DELIVER<br>WITH<br>TRUST</h1>
+      <p class="body-text">
+      Every package matters.
+      From sender to receiver, Wassali ensures a safe, transparent
+      and reliable delivery experience.
+      Built for trust. Designed for control.
+    </p>
+      <div class="cta-row">
+        <a class="cta" href="#s1">
+          Start Journey
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M1 6h10M6 1l5 5-5 5" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="s1">
+    <div class="text-card right">
+      <div class="h-line"></div>
+      <div class="tag">01 — Fast Delivery</div>
+
+      <h2>FAST.<br>SIMPLE.<br>DIRECT.</h2>
+
+      <p class="body-text">
+        No complexity. No waiting uncertainty.
+        Wassali connects buyers, sellers, and drivers in one smooth flow.
+        Speed without losing control.
+      </p>
+      <div class="cta-row">
+        <a class="cta-back" href="#s0">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M11 6H1M6 11L1 6l5-5" />
+          </svg>
+          Back
+        </a>
+        <a class="cta" href="#s2">
+          Continue
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M1 6h10M6 1l5 5-5 5" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="s2">
+    <div class="text-card">
+      <div class="h-line"></div>
+      <div class="tag">02 — Protected Shipping</div>
+
+      <h2>SAFE<br>EVERY STEP</h2>
+
+      <p class="body-text">
+        From pickup to delivery, every package is tracked, verified,
+        and protected against fraud or damage.
+        Transparency builds trust between all users.
+      </p>
+      <div class="cta-row">
+        <a class="cta-back" href="#s1">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M11 6H1M6 11L1 6l5-5" />
+          </svg>
+          Back
+        </a>
+        <a class="cta" href="#s3">
+          Continue
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M1 6h10M6 1l5 5-5 5" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="s3">
+    <div class="text-card right">
+      <div class="h-line"></div>
+      <div class="tag">03 — Ecosystem</div>
+
+      <h2>ONE<br>PLATFORM<br>THREE ROLES</h2>
+
+      <p class="body-text">
+        Whether you are a buyer, seller, or driver —
+        Wassali adapts to your role.
+        A unified system that keeps every transaction safe,
+        simple, and connected.
+      </p>
+      <div class="stat-row" style="justify-content: flex-end">
+        <div class="stat">
+          <span class="stat-num">BUY</span>
+          <span class="stat-label">Clients</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">SELL</span>
+          <span class="stat-label">Vendors</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">DELIVER</span>
+          <span class="stat-label">Drivers</span>
+        </div>
+      </div>
+      <div class="cta-row">
+        <a class="cta-back" href="#s2">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M11 6H1M6 11L1 6l5-5" />
+          </svg>
+          Back
+        </a>
+        <a class="cta" href="#s0">
+          Restart
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M1 6h10M6 1l5 5-5 5" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="credit">
+  <a href="https://www.linkedin.com/posts/luis-martinez-lr_ai-creativity-reversecreativity-activity-7366853269517651970-zeUD?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFq1dzgByK1x_NMrcq582OMbK-_3q0DthYY" target="_blank" rel="noopener">Reverse Creativity</a>
+</div>
+
+  </body>
+  
+</html>
