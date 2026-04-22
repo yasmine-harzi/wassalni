@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 // 1. IMPORT DU SERVICE (L'adresse du fichier auth.ts)
 import { AuthService } from '../../services/auth'; 
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register-client',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './register-client.html',
   styleUrl: './register-client.css'
 })

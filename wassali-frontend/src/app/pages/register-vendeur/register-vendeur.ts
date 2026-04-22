@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth'; 
+import { AuthService } from '../../services/auth';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register-vendeur',
   standalone: true,
-  imports: [ReactiveFormsModule,ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './register-vendeur.html',
   styleUrl: './register-vendeur.css'
 })
@@ -18,7 +19,8 @@ export class RegisterVendeur {
     password: new FormControl('', Validators.required),
     telephone: new FormControl(''),
     adresse: new FormControl(''),
-    nom_boutique: new FormControl('', Validators.required) // Champ spécifique
+    nom_entreprise: new FormControl('', Validators.required),
+    adresse_entreprise: new FormControl('', Validators.required)
   });
 
   constructor(private monOutilAuth: AuthService) {}
@@ -27,11 +29,11 @@ export class RegisterVendeur {
     if (this.vendeurForm.valid) {
       // On appelle la fonction registerVendeur du service
       this.monOutilAuth.registerVendeur(this.vendeurForm.value).subscribe({
-        next: (reponse) => {
+        next: (reponse: any) => {
           console.log('Vendeur enregistré !', reponse);
           alert('Boutique créée avec succès !');
         },
-        error: (err) => console.error('Erreur Vendeur:', err)
+        error: (err: any) => console.error('Erreur Vendeur:', err)
       });
     }
   }

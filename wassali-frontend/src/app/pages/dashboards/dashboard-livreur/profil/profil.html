@@ -1,0 +1,65 @@
+<div class="page-section">
+  <div class="profil-header">
+    <div class="profil-avatar">
+      {{ profil?.prenom?.charAt(0) }}{{ profil?.nom?.charAt(0) }}
+    </div>
+    <div class="profil-title">
+      <h2>{{ profil?.prenom }} {{ profil?.nom }}</h2>
+      <span class="role-tag">Livreur Certifié</span>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-card">
+    <div class="spinner-small"></div>
+    Chargement de votre profil...
+  </div>
+
+  <div class="profil-grid" *ngIf="!loading && profil">
+    <!-- Carte Informations Personnelles -->
+    <div class="profil-card info-section">
+      <div class="card-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <h3>Informations personnelles</h3>
+      </div>
+      <div class="info-list">
+        <div class="info-group">
+          <label>Email</label>
+          <div class="value">{{ profil.email }}</div>
+        </div>
+        <div class="info-group">
+          <label>Téléphone</label>
+          <div class="value">{{ profil.telephone || 'Non renseigné' }}</div>
+        </div>
+        <div class="info-group">
+          <label>Adresse de résidence</label>
+          <div class="value">{{ profil.adresse || 'Non renseignée' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carte Véhicule & Statut -->
+    <div class="profil-card status-section">
+      <div class="card-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polyline points="16 8 20 8 23 11 23 16 16 16"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <h3>Détails du véhicule</h3>
+      </div>
+      <div class="info-list">
+        <div class="info-group">
+          <label>Modèle de véhicule</label>
+          <div class="value highlight">{{ profil.vehicule || 'Moto standard' }}</div>
+        </div>
+        <div class="dispo-control">
+          <div class="dispo-info">
+            <label>Disponibilité actuelle</label>
+            <p [class.online]="profil.disponibilite" [class.offline]="!profil.disponibilite">
+              {{ profil.disponibilite ? '● Vous êtes en ligne' : '○ Vous êtes hors-ligne' }}
+            </p>
+          </div>
+          <button class="toggle-switch" [class.active]="profil.disponibilite" (click)="toggleDispo()">
+            <span class="switch-ball"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+/* Shared styles for sub-pages */
+.page-section { max-width: 900px; }
+.section-title { font-size: 20px; font-weight: 700; color: #1e1b4b; margin-bottom: 20px; }
+
+.filtres { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.filtres button {
+  padding: 6px 16px; border-radius: 20px; border: 1px solid #d1d5db;
+  background: #fff; cursor: pointer; font-size: 13px; color: #4b5563;
+}
+.filtres button.actif { background: #3C3489; color: #fff; border-color: #3C3489; }
+
+.loading-card, .empty-card {
+  background: #fff; border-radius: 12px; padding: 40px;
+  text-align: center; color: #9ca3af;
+}
+.empty-card span { font-size: 40px; display: block; margin-bottom: 8px; }
+
+.colis-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.colis-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.colis-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.colis-id { font-weight: 700; color: #3C3489; font-size: 15px; }
+.colis-body p { margin: 4px 0; font-size: 13px; color: #374151; }
+.colis-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+.badge { padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.badge-attente { background: #fef3c7; color: #d97706; }
+.badge-ramasse { background: #dbeafe; color: #2563eb; }
+.badge-route { background: #ede9fe; color: #7c3aed; }
+.badge-livre { background: #dcfce7; color: #16a34a; }
+.badge-annule { background: #fee2e2; color: #dc2626; }
+
+.btn-action {
+  padding: 8px 14px; background: #3C3489; color: #fff;
+  border: none; border-radius: 8px; cursor: pointer; font-size: 13px;
+}
+.btn-action:hover { background: #2e2870; }
+.btn-danger { padding: 8px 14px; background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
+.btn-outline { padding: 8px 14px; border: 1px solid #3C3489; color: #3C3489; border-radius: 8px; font-size: 13px; text-decoration: none; }

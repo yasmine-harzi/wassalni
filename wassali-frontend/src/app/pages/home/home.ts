@@ -21,7 +21,7 @@ export class Home {
     } else if (role === 'vendeur') {
       this.router.navigate(['/register-vendeur']);
     } else if (role === 'coursier') {
-      this.router.navigate(['/register-coursier']);
+      this.router.navigate(['/register-livreur']);
     }
   }
 }

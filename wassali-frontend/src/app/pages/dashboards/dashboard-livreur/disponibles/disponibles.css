@@ -1,0 +1,8 @@
+@import '../colis/colis.css';
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.section-header .section-title { margin-bottom: 0; }
+.btn-refresh { padding: 8px 16px; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; font-size: 13px; }
+.colis-card.available { border-left: 3px solid #3C3489; }
+.btn-accept { width: 100%; padding: 10px; background: #3C3489; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 12px; }
+.btn-accept:disabled { opacity: .6; cursor: not-allowed; }
+.alert-success { background: #dcfce7; color: #16a34a; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; }

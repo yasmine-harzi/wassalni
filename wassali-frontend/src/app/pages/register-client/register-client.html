@@ -1,6 +1,6 @@
 <div class="register-container">
   <h2>Inscription Client</h2>
-  
+
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
       <div class="form-group">
@@ -43,4 +43,9 @@
 
     <button type="submit" [disabled]="!registerForm.valid">S'inscrire</button>
   </form>
+
+  <div class="login-redirect">
+    <p>Déjà un compte ?</p>
+    <button type="button" class="btn-link" routerLink="">Se connecter</button>
+  </div>
 </div>

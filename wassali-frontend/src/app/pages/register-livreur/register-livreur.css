@@ -76,3 +76,32 @@ button:disabled {
 @media (max-width: 480px) {
     .form-row { flex-direction: column; gap: 0; }
 }
+.login-redirect {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+.login-redirect p {
+    color: #666;
+    font-size: 14px;
+}
+.btn-link {
+    background: none;
+    border: 2px solid #e63946;
+    color: #e63946;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    width: auto !important;
+    display: inline-block;
+}
+.btn-link:hover {
+    background-color: #e63946;
+    color: white;
+}
+
+

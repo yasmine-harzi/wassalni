@@ -1,78 +1,109 @@
-/* Conteneur principal qui centre le formulaire */
-.form-container {
-    max-width: 450px;
-    margin: 50px auto;
+﻿.register-container {
+    max-width: 500px;
+    margin: 40px auto;
     padding: 30px;
     background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border-top: 5px solid #e63946; /* Ligne rouge en haut */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-top: 6px solid #e63946;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 h2 {
-    color: #e63946; /* Rouge */
+    color: #e63946;
     text-align: center;
-    margin-bottom: 25px;
-    font-weight: 600;
+    margin-bottom: 30px;
+    text-transform: uppercase;
 }
 
-/* Style des groupes de saisie */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
 }
 
 label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
     font-size: 14px;
-    font-weight: 500;
 }
 
 input, select {
-    width: 100%;
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 15px;
-    transition: border-color 0.3s ease;
-    box-sizing: border-box; /* Très important pour le padding */
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
 }
 
 input:focus, select:focus {
-    outline: none;
-    border-color: #e63946; /* Devient rouge au clic */
-    box-shadow: 0 0 5px rgba(230, 57, 70, 0.2);
+    border-color: #e63946;
+    box-shadow: 0 0 8px rgba(230, 57, 70, 0.15);
 }
 
-/* Le bouton d'envoi */
 button {
     width: 100%;
-    padding: 14px;
-    background-color: #e63946; /* Rouge */
+    padding: 15px;
+    background-color: #e63946;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     margin-top: 10px;
 }
 
 button:hover {
-    background-color: #c12a36; /* Rouge plus foncé au survol */
+    background-color: #c12a36;
 }
 
 button:disabled {
-    background-color: #ffb3b8;
+    background-color: #f8b4b9;
     cursor: not-allowed;
 }
 
-/* Petits messages d'erreur */
-.error-text {
+@media (max-width: 480px) {
+    .form-row { flex-direction: column; gap: 0; }
+}
+
+.login-redirect {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.login-redirect p {
+    color: #666;
+    font-size: 14px;
+}
+
+.btn-link {
+    background: none;
+    border: 2px solid #e63946;
     color: #e63946;
-    font-size: 12px;
-    margin-top: 5px;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    width: auto !important;
+    display: inline-block;
+}
+
+.btn-link:hover {
+    background-color: #e63946;
+    color: white;
 }

@@ -1,0 +1,12 @@
+@import '../colis/colis.css';
+.position-card { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.position-card h3 { font-size: 15px; font-weight: 600; color: #1e1b4b; margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; color: #374151; margin-bottom: 6px; }
+.form-group input { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+.hint { font-size: 12px; color: #9ca3af; margin-top: 8px; }
+.positions-list { display: flex; flex-direction: column; gap: 8px; }
+.position-row { background: #fff; border-radius: 8px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+.pos-dot { color: #3C3489; font-size: 18px; margin-top: 2px; }
+.pos-coords { font-size: 14px; font-weight: 500; color: #1e1b4b; margin: 0; }
+.pos-date { font-size: 12px; color: #9ca3af; margin: 2px 0 0; }

@@ -1,0 +1,18 @@
+<div class="page-section">
+  <div class="section-header">
+    <h2 class="section-title">🔔 Notifications <span class="notif-count" *ngIf="nonLus > 0">{{ nonLus }}</span></h2>
+    <button class="btn-tout-lire" *ngIf="nonLus > 0" (click)="toutLire()">Tout marquer lu</button>
+  </div>
+  <div *ngIf="loading" class="loading-card">Chargement...</div>
+  <div *ngIf="!loading && notifs.length === 0" class="empty-card"><span>🔕</span><p>Aucune notification</p></div>
+  <div class="notifs-list" *ngIf="!loading">
+    <div class="notif-item" *ngFor="let n of notifs" [class.non-lu]="!n.lu" (click)="!n.lu && marquerLu(n.id_notification)">
+      <div class="notif-dot" [class.unread]="!n.lu"></div>
+      <div class="notif-content">
+        <p class="notif-msg">{{ n.message }}</p>
+        <p class="notif-date">{{ n.date_envoi | date:'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <span class="new-tag" *ngIf="!n.lu">Nouveau</span>
+    </div>
+  </div>
+</div>
