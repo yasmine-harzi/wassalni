@@ -1,6 +1,10 @@
 import {
   Component,
+  ElementRef,
   AfterViewInit,
+  OnDestroy,
+  Renderer2,
+  NgZone,
   HostListener
 } from '@angular/core';
 
@@ -14,179 +18,133 @@ type Stop = {
   standalone: true,
   imports: [],
   templateUrl: './scroll-package-story.html',
-  styleUrl: './scroll-package-story.css'
+  styleUrl: './scroll-package-story.css',
 })
-export class ScrollPackageStoryComponent implements AfterViewInit {
-
+export class ScrollPackageStoryComponent implements AfterViewInit, OnDestroy {
   // ----------------------
-  // DATA
+  // DATA & CONFIG
   // ----------------------
+  private IMAGE_SRCS: string[] = [
+    "LeftBox.png", 
+    "UpBox.jpeg",      // Image 0 -> TOP
 
-  IMAGE_SRCS: string[] = [
-    "https://assets.codepen.io/573855/demo-raw-01.webp",
-    "https://assets.codepen.io/573855/demo-raw-02.webp",
-    "https://assets.codepen.io/573855/demo-raw-03.webp",
-    "https://assets.codepen.io/573855/demo-raw-04.webp"
+    "RightBox.jpeg"   // Image 2 -> RIGHT
   ];
 
-  FACE_NAMES: string[] = [
-    "DESCENT",
-    "REBELLION",
-    "MOO WALK",
-    "BAD ART"
-  ];
+  private FACE_NAMES: string[] = ["TOP", "FRONT", "RIGHT"];
 
-  cube!: HTMLElement;
-  faces!: HTMLElement[];
-  hud!: HTMLElement;
+  private cube!: HTMLElement;
+  private faces!: HTMLElement[];
+  private hud!: HTMLElement;
+  private stops: Stop[] = [];
+  private smooth = 0;
+  private target = 0;
+  private animationId: number | null = null;
 
-  stops: Stop[] = [];
-
-  smooth = 0;
-  target = 0;
-
-  imageCache: Map<string, Promise<HTMLImageElement>> = new Map();
-
-  // ----------------------
-  // INIT (Angular lifecycle)
-  // ----------------------
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private ngZone: NgZone
+  ) {}
 
   ngAfterViewInit(): void {
-    this.initDOM();
+    this.cube = this.el.nativeElement.querySelector("#cube");
+    this.faces = Array.from(this.el.nativeElement.querySelectorAll(".face"));
+    this.hud = this.el.nativeElement.querySelector("#hud_pct");
+
     this.buildStops();
-    this.preloadImages();
     this.initFaces();
-    this.animate();
+    this.initRevealObserver();
+
+    this.ngZone.runOutsideAngular(() => {
+      this.animate();
+    });
   }
 
-  // ----------------------
-  // DOM
-  // ----------------------
-
-  private initDOM(): void {
-    this.cube = document.getElementById("cube") as HTMLElement;
-    this.faces = Array.from(document.querySelectorAll(".face")) as HTMLElement[];
-    this.hud = document.getElementById("hud_pct") as HTMLElement;
+  ngOnDestroy(): void {
+    if (this.animationId) cancelAnimationFrame(this.animationId);
   }
-
-  // ----------------------
-  // STOPS
-  // ----------------------
 
   private buildStops(): void {
-    const base: Stop[] = [
-      { rx: 90, ry: 0 },
-      { rx: 0, ry: 0 },
-      { rx: 0, ry: -90 },
-      { rx: 0, ry: -180 }
+    this.stops = [
+      { rx: 90, ry: 0 },   // Section 0: TOP Face
+      { rx: 0, ry: 0 },    // Section 1: FRONT Face
+      { rx: 0, ry: -90 }   // Section 2: RIGHT Face
     ];
-
-    this.stops = base.slice(0, this.IMAGE_SRCS.length);
-  }
-
-  // ----------------------
-  // IMAGES
-  // ----------------------
-
-  private preloadImage(src: string): Promise<HTMLImageElement> {
-    if (this.imageCache.has(src)) {
-      return this.imageCache.get(src)!;
-    }
-
-    const promise = new Promise<HTMLImageElement>((resolve) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => resolve(img);
-    });
-
-    this.imageCache.set(src, promise);
-    return promise;
-  }
-
-  private preloadImages(): void {
-    this.IMAGE_SRCS.forEach(src => this.preloadImage(src));
-  }
-
-  private async setFaceImage(faceIdx: number, imgIdx: number) {
-    const face = this.faces[faceIdx];
-    const src = this.IMAGE_SRCS[imgIdx];
-
-    await this.preloadImage(src);
-
-    let img = face.querySelector("img") as HTMLImageElement | null;
-
-    if (!img) {
-      img = new Image();
-      face.appendChild(img);
-    }
-
-    img.src = src;
-    img.alt = this.FACE_NAMES[imgIdx];
   }
 
   private initFaces(): void {
-    this.faces.forEach((_, i) => {
-      if (this.IMAGE_SRCS[i]) {
-        this.setFaceImage(i, i);
+    const faceAssignment: { [key: string]: number } = {
+      "top": 0,
+      "front": 1,
+      "right": 2
+    };
+
+    this.faces.forEach((face) => {
+      const type = face.getAttribute('data-face');
+      if (type && faceAssignment[type] !== undefined) {
+        this.setFaceImage(face, faceAssignment[type]);
       }
     });
   }
 
-  // ----------------------
-  // SCROLL (Angular way)
-  // ----------------------
+  private setFaceImage(face: HTMLElement, imgIdx: number) {
+    const src = this.IMAGE_SRCS[imgIdx];
+    let img = face.querySelector("img") as HTMLImageElement;
 
-  @HostListener('window:scroll')
+    if (!img) {
+      img = this.renderer.createElement('img');
+      this.renderer.appendChild(face, img);
+    }
+
+    img.src = src;
+    img.style.display = 'block';
+    img.style.position = 'absolute';
+    img.style.inset = '0';
+    img.style.zIndex = '5';
+  }
+
+  @HostListener('window:scroll', [])
   onScroll(): void {
-    const maxScroll =
-      document.documentElement.scrollHeight - window.innerHeight;
-
-    this.target = this.clamp(window.scrollY / maxScroll, 0, 1);
-  }
-
-  private clamp(v: number, min: number, max: number): number {
-    return Math.max(min, Math.min(max, v));
-  }
-
-  // ----------------------
-  // ANIMATION
-  // ----------------------
-
-  private easeInOut(t: number): number {
-    return t < 0.5
-      ? 2 * t * t
-      : -1 + (4 - 2 * t) * t;
-  }
-
-  private updateHUD(s: number): void {
-    if (!this.hud) return;
-    const percent = Math.round(s * 100);
-    this.hud.textContent = `${percent}%`;
-  }
-
-  private setCubeTransform(s: number): void {
-    const n = this.stops.length;
-    if (n < 2) return;
-
-    const t = s * (n - 1);
-    const i = Math.min(Math.floor(t), n - 2);
-    const f = this.easeInOut(t - i);
-
-    const a = this.stops[i];
-    const b = this.stops[i + 1];
-
-    const rx = a.rx + (b.rx - a.rx) * f;
-    const ry = a.ry + (b.ry - a.ry) * f;
-
-    this.cube.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const raw = scrollHeight > 0 ? window.scrollY / scrollHeight : 0;
+    this.target = Math.max(0, Math.min(1, raw));
   }
 
   private animate = (): void => {
-    requestAnimationFrame(this.animate);
-
-    this.smooth += (this.target - this.smooth) * 0.1;
-
-    this.updateHUD(this.smooth);
+    this.smooth += (this.target - this.smooth) * 0.08;
+    if (this.hud) this.hud.textContent = `${Math.round(this.smooth * 100)}%`;
     this.setCubeTransform(this.smooth);
+    this.animationId = requestAnimationFrame(this.animate);
   };
+
+  private setCubeTransform(s: number): void {
+    if (!this.cube || this.stops.length < 2) return;
+    const n = this.stops.length;
+    const t = s * (n - 1);
+    const i = Math.min(Math.floor(t), n - 2);
+    const f = this.easeInOut(t - i);
+    const a = this.stops[i];
+    const b = this.stops[i+1];
+    const rx = a.rx + (b.rx - a.rx) * f;
+    const ry = a.ry + (b.ry - a.ry) * f;
+    this.renderer.setStyle(this.cube, 'transform', `rotateX(${rx}deg) rotateY(${ry}deg)`);
+  }
+
+  private easeInOut(t: number): number {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  }
+
+  private initRevealObserver() {
+    const revealEls = this.el.nativeElement.querySelectorAll(".tag, h1, h2, .body-text, .cta, .cta-back, .h-line");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.renderer.addClass(entry.target, 'visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    revealEls.forEach((el: HTMLElement) => observer.observe(el));
+  }
 }

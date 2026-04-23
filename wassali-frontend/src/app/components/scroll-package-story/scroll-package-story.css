@@ -11,6 +11,23 @@
     padding: 0;
   }
 }
+/* Add this to the top of your CSS file to ensure visibility during debugging */
+.text-card {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure the reveal classes have a base state */
+.tag, h1, h2, .body-text, .stat-row, .cta, .cta-back, .h-line {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+}
+
+.tag.visible, h1.visible, h2.visible, .body-text.visible, .stat-row.visible, .cta.visible, .cta-back.visible, .h-line.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 @layer tokens {
   :root {
@@ -84,13 +101,14 @@
 
 @layer cube {
   #cube {
-    --s: min(74vw, 74vh, 560px);
+    --s: min(60vw, 60vh, 450px);
     width: var(--s);
     height: var(--s);
     position: relative;
     transform-style: preserve-3d;
     transform: rotateX(90deg) rotateY(0deg);
     will-change: transform;
+    transform: rotateX(90deg) rotateY(0deg);
   }
 
   .face {
@@ -98,7 +116,7 @@
     inset: 0;
     overflow: hidden;
     backface-visibility: hidden;
-    background: repeating-linear-gradient(
+    /*background: repeating-linear-gradient(
         0deg,
         rgba(255, 255, 255, 0.02) 0,
         rgba(255, 255, 255, 0.02) 1px,
@@ -112,22 +130,27 @@
         transparent 1px,
         transparent 48px
       ),
-      #14100d;
+      #14100d;*/
+      background: #14100d; 
+      border: 1px solid rgb(255, 255, 255);
 
     img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /*transform: scale(1.5); * Ensures your upscaled images don't stretch */
     }
 
     &:has(img) .face-ph {
       display: none;
     }
   }
-
+  .face[data-face="Up"] img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill; /* This stretches it */
+    transform: scale(1.2); /* This makes it look bigger */
+  }
   .face-ph {
     position: absolute;
     bottom: 1.5rem;
@@ -638,4 +661,5 @@
       margin-block-start: 1.25rem;
     }
   }
+  
 }
