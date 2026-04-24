@@ -25,10 +25,10 @@ export class ScrollPackageStoryComponent implements AfterViewInit, OnDestroy {
   // DATA & CONFIG
   // ----------------------
   private IMAGE_SRCS: string[] = [
-    "LeftBox.png", 
-    "UpBox.jpeg",      // Image 0 -> TOP
+    "LeftBox3.png", 
+    "upBox3.jpeg",      // Image 0 -> TOP
 
-    "RightBox.jpeg"   // Image 2 -> RIGHT
+    "RightBox2.jpeg"   // Image 2 -> RIGHT
   ];
 
   private FACE_NAMES: string[] = ["TOP", "FRONT", "RIGHT"];
