@@ -12,21 +12,30 @@ import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angula
 export class RegisterLivreur {
 
   coursierForm = new FormGroup({
-    nom: new FormControl('', Validators.required),
-    prenom: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.required),
-    vehicule: new FormControl('moto'), // Valeur par défaut
-    permis: new FormControl('', Validators.required), // Champ spécifique
-    adresse: new FormControl('')
-  });
+  // Champs pour la table 'users'
+  nom: new FormControl(''),// Validators.required),
+  prenom: new FormControl(''),
+  email: new FormControl(''),
+  password: new FormControl(''),
+  telephone: new FormControl(''),
+  adresse: new FormControl(''),// Domicile
+  
+  // Champs pour la table 'coursier' (liés par id_user au backend)
+ 
+  vehicule: new FormControl(''),
+  permis: new FormControl(''),
+  zone_livraison: new FormControl(''), // Travail
+  disponibilite: new FormControl(true),
+  latitude_actuelle: new FormControl(0),
+  longitude_actuelle: new FormControl(0)
+});
 
   constructor(private monOutilAuth: AuthService) {}
 
   onSubmit() {
     if (this.coursierForm.valid) {
-      // On appelle la fonction registerCoursier du service
-      this.monOutilAuth.registerCoursier(this.coursierForm.value).subscribe({
+      // On appelle la fonction RegisterLivreur du service
+      this.monOutilAuth.RegisterLivreur(this.coursierForm.value).subscribe({
         next: (reponse) => {
           console.log('Coursier enregistré !', reponse);
           alert('Compte coursier activé !');

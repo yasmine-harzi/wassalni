@@ -19,4 +19,15 @@ export class HeroPackageComponent {
       this.opened = false;
     }, 1200);
   }
+  scrollToRoles() {
+    // We look for the component tag directly in the DOM
+    const element = document.querySelector('app-role-selector');
+    
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    }
+  }
 }

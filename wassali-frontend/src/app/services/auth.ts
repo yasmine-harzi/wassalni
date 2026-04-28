@@ -21,8 +21,8 @@ export class AuthService {
   }
 
   // 3. Inscription Coursier / Livreur
-  registerCoursier(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register-coursier`, userData);
+  RegisterLivreur(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register-livreur`, userData);
   }
 
   // 4. Connexion (Login commun à tous)

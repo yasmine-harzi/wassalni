@@ -33,6 +33,8 @@ class VendeurSchema(UserBase):
 
 class CoursierSchema(UserBase):
     vehicule: str
+    permis: str            # <--- AJOUTÉ
+    zone_livraison: str
     latitude_actuelle: Optional[float] = 0.0
     longitude_actuelle: Optional[float] = 0.0
 
@@ -95,10 +97,12 @@ async def register_vendeur(data: VendeurSchema):
         "adresse_entreprise": data.adresse_entreprise
     })
 
-@app.post("/api/register-coursier")
-async def register_coursier(data: CoursierSchema):
+@app.post("/api/register-livreur")
+async def register_livreur(data: CoursierSchema):
     return handle_registration(data, "coursier", {
         "vehicule": data.vehicule, 
+        "permis": data.permis,              # <--- AJOUTÉ
+        "zone_livraison": data.zone_livraison, # <--- AJOUTÉ
         "disponibilite": 1,
         "latitude_actuelle": data.latitude_actuelle,
         "longitude_actuelle": data.longitude_actuelle
@@ -125,13 +129,13 @@ def get_all_by_role(role: str):
         return []
 
 @app.get("/client")
-async def get_clients():
+async def get_client():
     return get_all_by_role("client")
 
 @app.get("/vendeur")
-async def get_vendeurs():
+async def get_vendeur():
     return get_all_by_role("vendeur")
 
-@app.get("/coursier")
-async def get_coursiers():
+@app.get("/coursier") 
+async def get_coursier():
     return get_all_by_role("coursier")

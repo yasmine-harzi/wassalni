@@ -1,27 +1,48 @@
 <div class="register-container">
   <h2>Inscription Coursier</h2>
   
-  <form [formGroup]="coursierForm" (ngSubmit)="onSubmit()">
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nom</label>
-        <input type="text" formControlName="nom" placeholder="Ex: Ben Ali">
+  <form [formGroup]="coursierForm" (ngSubmit)="onSubmit()" class="registration-card">
+    <h2 class="form-title">Créer un compte</h2>
+    <p class="form-subtitle">Rejoignez notre équipe de livreurs dès maintenant.</p>
+
+    <div class="row">
+      <div class="col-md-6 mb-4 position-relative">
+        <label class="form-label">Nom</label>
+        <input type="text" formControlName="nom" class="form-control custom-input" placeholder="Ex: Dupont" required>
+        <div class="feedback-text">Le nom est obligatoire</div>
       </div>
-      <div class="form-group">
-        <label>Prénom</label>
-        <input type="text" formControlName="prenom" placeholder="Ex: Ahmed">
+
+      <div class="col-md-6 mb-4 position-relative">
+        <label class="form-label">Prénom</label>
+        <input type="text" formControlName="prenom" class="form-control custom-input" placeholder="Ex: Jean" required>
+        <div class="feedback-text">Le prénom est obligatoire</div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Email professionnel</label>
-      <input type="email" formControlName="email">
+    <div class="mb-4 position-relative">
+      <label class="form-label">Adresse Email</label>
+      <input type="email" formControlName="email" class="form-control custom-input" placeholder="nom@exemple.com" required>
+      <div class="feedback-text">Format d'email invalide (ex: nom@mail.com)</div>
     </div>
 
-    <div class="form-group">
-      <label>Mot de passe</label>
-      <input type="password" formControlName="password">
+    <div class="mb-4 position-relative">
+      <label class="form-label">Mot de passe</label>
+      <input type="password" formControlName="password" class="form-control custom-input" placeholder="••••••••" required minlength="6">
+      <div class="feedback-text">Minimum 6 caractères requis</div>
     </div>
+
+    <div class="mb-4 position-relative">
+      <label class="form-label">Téléphone</label>
+      <input type="tel" formControlName="telephone" class="form-control custom-input" placeholder="Ex: +216 22 123 456" required>
+      <div class="feedback-text">Numéro de téléphone requis</div>
+    </div>
+
+    <div class="mb-4 position-relative">
+      <label class="form-label">Adresse de résidence</label>
+      <input type="text" formControlName="adresse" class="form-control custom-input" placeholder="Ex: Rue de la Liberté, Tunis" required>
+      <div class="feedback-text">L'adresse est nécessaire</div>
+    </div>
+
 
     <div class="form-row">
       <div class="form-group">

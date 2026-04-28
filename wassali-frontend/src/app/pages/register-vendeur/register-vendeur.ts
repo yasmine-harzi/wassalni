@@ -12,13 +12,14 @@ import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angula
 export class RegisterVendeur {
 
   vendeurForm = new FormGroup({
-    nom: new FormControl('', Validators.required),
-    prenom: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.required),
+   nom: new FormControl(''),
+    prenom: new FormControl(''),
+    email: new FormControl(''),
+    password: new FormControl(''),
     telephone: new FormControl(''),
     adresse: new FormControl(''),
-    nom_boutique: new FormControl('', Validators.required) // Champ spécifique
+    nom_entreprise: new FormControl(''), // Correspond à ta DB
+    adresse_entreprise: new FormControl('') // Correspond à ta DB
   });
 
   constructor(private monOutilAuth: AuthService) {}

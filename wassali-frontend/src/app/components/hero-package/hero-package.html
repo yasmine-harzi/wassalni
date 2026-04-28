@@ -1,22 +1,30 @@
-<section class="hero">
+<section class="hero-container">
+  <div class="metallic-overlay"></div>
 
-  <div class="logo">Wassali</div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      <span class="badge-text">Wassalni Platform 2026</span>
+    </div>
 
-  <div class="package" (click)="openPackage()">
-    📦
+    <div class="brand-area">
+      <div class="logo-placeholder">
+        <div class="logo-circle">W</div>
+      </div>
+      <h1 class="hero-title">Wassalni</h1>
+    </div>
+
+    <p class="hero-subtitle">
+      L'écosystème logistique intelligent qui connecte <br>
+      <span>Vendeurs</span>, <span>Coursiers</span> et <span>Clients</span>.
+    </p>
+
+    <div class="hero-actions">
+      <button class="btn-primary" (click)="scrollToRoles()">Commencer</button>
+      <button class="btn-secondary">Voir la démo</button>
+    </div>
   </div>
 
-  <h1>Fast. Secure. Effortless delivery.</h1>
-
-  <p>Send and track your packages in seconds.</p>
-
-  <div class="actions">
-    <input placeholder="Track your package..." />
-    <button>Send Package</button>
-  </div>
-
-  <div class="particles" [class.active]="opened">
-    <span *ngFor="let p of particles">•</span>
-  </div>
-
+  <div class="side-accent left"></div>
+  <div class="side-accent right"></div>
 </section>

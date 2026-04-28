@@ -1,21 +1,48 @@
-<div class="form-container">
-  <h2>Inscription Client</h2>
+<div class="register-container">
+  <h2>Inscription Vendeur (Boutique)</h2>
   
   <form [formGroup]="vendeurForm" (ngSubmit)="onSubmit()">
-    
-    <div class="form-group">
-      <label>Nom</label>
-      <input type="text" formControlName="nom" placeholder="Ex: Ben Ali">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nom</label>
+        <input type="text" formControlName="nom">
+      </div>
+      <div class="form-group">
+        <label>Prénom</label>
+        <input type="text" formControlName="prenom">
+      </div>
     </div>
 
     <div class="form-group">
       <label>Email</label>
-      <input type="email" formControlName="email" placeholder="exemple@mail.com">
+      <input type="email" formControlName="email">
     </div>
 
-    <button type="submit" [disabled]="!vendeurForm.valid">
-      S'inscrire
-    </button>
-    
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" formControlName="password">
+    </div>
+
+    <div class="form-group">
+      <label>Téléphone</label>
+      <input type="text" formControlName="telephone">
+    </div>
+
+    <div class="form-group">
+      <label>Adresse</label>
+      <input type="text" formControlName="adresse">
+    </div>
+
+    <div class="form-group">
+      <label>Nom de la Boutique</label>
+      <input type="text" formControlName="nom_entreprise" placeholder="Ex: La Maison du Café">
+    </div>
+
+    <div class="form-group">
+      <label>Adresse de la Boutique</label>
+      <input type="text" formControlName="adresse_entreprise" placeholder="Ex: 123 Rue de Tunis, Ariana...">
+    </div>
+
+    <button type="submit" [disabled]="!vendeurForm.valid">Ouvrir ma boutique</button>
   </form>
 </div>

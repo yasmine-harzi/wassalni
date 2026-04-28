@@ -1,24 +1,61 @@
-<section class="roles">
+<section class="role-section">
+  <div class="content-wrapper">
+    <h2 class="section-title">Rejoignez <span>Wassalni</span></h2>
+    <p class="section-subtitle">Sélectionnez votre type de compte pour continuer</p>
 
-  <h2>Choose your role</h2>
+    <div class="roles-grid">
+      <div class="role-card" (click)="goToRegister('client')">
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Client</h3>
+        <p>Accédez à une large gamme de produits et services livrés chez vous.</p>
+        <div class="card-footer">
+          <span>Créer un compte</span>
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
 
-  <div class="cards">
+      <div class="role-card highlight" (click)="goToRegister('vendeur')">
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="9 22 9 12 15 12 15 22" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Vendeur</h3>
+        <p>Digitalisez votre boutique et touchez des milliers de nouveaux clients.</p>
+        <div class="card-footer">
+          <span>Ouvrir une boutique</span>
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
 
-    <div class="card">
-      <h3>Buyer</h3>
-      <p>Send and receive packages easily</p>
+      <div class="role-card" (click)="goToRegister('coursier')">
+        <div class="icon-container">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="1" y="3" width="15" height="13" stroke-linecap="round" stroke-linejoin="round"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="5.5" cy="18.5" r="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="18.5" cy="18.5" r="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Coursier</h3>
+        <p>Gérez votre temps et générez des revenus en livrant autour de vous.</p>
+        <div class="card-footer">
+          <span>Devenir livreur</span>
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
     </div>
-
-    <div class="card">
-      <h3>Seller</h3>
-      <p>Manage your deliveries</p>
-    </div>
-
-    <div class="card">
-      <h3>Driver</h3>
-      <p>Deliver and earn money</p>
-    </div>
-
   </div>
-
 </section>

@@ -1,54 +1,184 @@
-.hero {
-  height: 100vh;
+/* hero-package.component.css */
+
+:host {
+  --dark-mauve: #4A3B4D;
+  --light-mauve: #F3E8F5;
+  --metallic-silver: #E2E2E7;
+  --border-color: rgba(74, 59, 77, 0.1);
+}
+
+.hero-container {
+  height: 75vh; /* As we discussed, balanced height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fdfcfe;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  background-image: 
+    radial-gradient(circle at center, rgba(243, 232, 245, 0.8) 0%, transparent 70%),
+    radial-gradient(var(--dark-mauve) 0.5px, transparent 0.5px);
+  background-size: 100% 100%, 40px 40px;
+}
+@keyframes metallicPulse {
+  0% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 0.4; }
+}
+.hero-container::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, rgba(243, 232, 245, 0.4) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  animation: metallicPulse 8s infinite ease-in-out;
+}
+
+/* Metallic Grainy Overlay */
+.metallic-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 2px 2px, var(--light-mauve) 1px, transparent 0);
+  background-size: 40px 40px;
+  opacity: 0.3;
+  mask-image: radial-gradient(circle, black, transparent);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 800px;
+}
+
+/* The Raycast Badge */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #fff;
+  border: 1px solid var(--metallic-silver);
+  border-radius: 100px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 32px;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--dark-mauve);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--dark-mauve);
+}
+
+.badge-text {
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--dark-mauve);
+}
+
+/* Brand & Logo */
+.brand-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: #f8fafc;
+  margin-bottom: 24px;
 }
 
-.logo {
-  font-size: 22px;
-  font-weight: bold;
+.logo-circle {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(145deg, #ffffff, var(--metallic-silver));
+  border: 1px solid #d1d1d6;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--dark-mauve);
+  box-shadow: 4px 4px 10px rgba(0,0,0,0.05), -2px -2px 8px #fff;
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #000;
+  margin: 0;
+  /* Metallic Gradient Text */
+  background: linear-gradient(to bottom, #000 60%, var(--dark-mauve));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #666;
+  line-height: 1.5;
   margin-bottom: 40px;
 }
 
-.package {
-  font-size: 90px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
+.hero-subtitle span {
+  color: var(--dark-mauve);
+  font-weight: 600;
 }
 
-.package:hover {
-  transform: scale(1.1);
-}
-
-.actions {
-  margin-top: 20px;
+/* Metallic Buttons */
+.hero-actions {
   display: flex;
-  gap: 10px;
+  gap: 16px;
+  justify-content: center;
 }
 
-input {
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-}
-
-button {
-  padding: 10px 15px;
-  background: #3b82f6;
-  color: white;
+.btn-primary {
+  padding: 12px 32px;
+  background: var(--dark-mauve);
+  color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.particles {
-  margin-top: 20px;
-  opacity: 0;
-  transition: 0.4s;
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(74, 59, 77, 0.2);
 }
 
-.particles.active {
-  opacity: 1;
+.btn-secondary {
+  padding: 12px 32px;
+  background: #fff;
+  color: #000;
+  border: 1px solid var(--metallic-silver);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
+
+.btn-secondary:hover {
+  background: var(--light-mauve);
+  border-color: var(--dark-mauve);
+}
+
+/* Side Accents (The Raycast "Bezel" feel) */
+.side-accent {
+  position: absolute;
+  top: 20%;
+  width: 1px;
+  height: 60%;
+  background: linear-gradient(to bottom, transparent, var(--metallic-silver), transparent);
+}
+.left { left: 5%; }
+.right { right: 5%; }

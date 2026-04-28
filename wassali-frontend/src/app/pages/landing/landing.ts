@@ -4,6 +4,7 @@ import { ScrollPackageStoryComponent } from '../../components/scroll-package-sto
 import { RoleSelectorComponent } from '../../components/role-selector/role-selector';
 import { TeamCarouselComponent } from '../../components/team-carousel/team-carousel';
 
+
 @Component({
   selector: 'app-landing',
   standalone: true,
@@ -16,4 +17,6 @@ import { TeamCarouselComponent } from '../../components/team-carousel/team-carou
   templateUrl: './landing.html',
   styleUrls: ['./landing.css']
 })
-export class LandingComponent {}
+export class LandingComponent {
+  
+}

@@ -27,7 +27,6 @@ export class ScrollPackageStoryComponent implements AfterViewInit, OnDestroy {
   private IMAGE_SRCS: string[] = [
     "LeftBox3.png", 
     "upBox3.jpeg",      // Image 0 -> TOP
-
     "RightBox2.jpeg"   // Image 2 -> RIGHT
   ];
 
