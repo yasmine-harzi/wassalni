@@ -33,7 +33,7 @@ class VendeurSchema(UserBase):
 
 class CoursierSchema(UserBase):
     vehicule: str
-    permis: str            # <--- AJOUTÉ
+    permis: str   
     zone_livraison: str
     latitude_actuelle: Optional[float] = 0.0
     longitude_actuelle: Optional[float] = 0.0

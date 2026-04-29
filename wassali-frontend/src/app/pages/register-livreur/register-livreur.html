@@ -2,8 +2,6 @@
   <h2>Inscription Coursier</h2>
   
   <form [formGroup]="coursierForm" (ngSubmit)="onSubmit()" class="registration-card">
-    <h2 class="form-title">Créer un compte</h2>
-    <p class="form-subtitle">Rejoignez notre équipe de livreurs dès maintenant.</p>
 
     <div class="row">
       <div class="col-md-6 mb-4 position-relative">
@@ -43,26 +41,32 @@
       <div class="feedback-text">L'adresse est nécessaire</div>
     </div>
 
-
     <div class="form-row">
       <div class="form-group">
         <label>Type de Véhicule</label>
-        <select formControlName="vehicule">
+        <select formControlName="vehicule" required>
+          <option value="" disabled selected>Choisir un véhicule</option>
           <option value="moto">Moto / Scooter</option>
           <option value="velo">Vélo</option>
           <option value="voiture">Voiture</option>
           <option value="camionnette">Camionnette</option>
         </select>
+        <div class="feedback-text">Veuillez choisir une option</div>
       </div>
+
       <div class="form-group">
         <label>N° Permis / CIN</label>
-        <input type="text" formControlName="permis" placeholder="Numéro officiel">
+        <input type="text" formControlName="permis" placeholder=" " required>
+        <div class="feedback-text">Numéro officiel requis</div>
       </div>
     </div>
 
+    
+
     <div class="form-group">
       <label>Zone de livraison (Ville)</label>
-      <input type="text" formControlName="adresse" placeholder="Ex: Tunis, Ariana...">
+      <input type="text" formControlName="zone_livraison" placeholder=" " required>
+      <div class="feedback-text">Ex: Tunis, Ariana...</div>
     </div>
 
     <button type="submit" [disabled]="!coursierForm.valid">Devenir Coursier</button>
