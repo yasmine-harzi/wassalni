@@ -124,3 +124,48 @@ button:disabled {
         border-radius: 16px;
     }
 }
+/* --- ÉTATS DE VALIDATION (Intégration au thème Metallic) --- */
+
+/* 1. État INVALIDE : Rouge doux qui s'accorde au mauve */
+input.ng-invalid.ng-touched, 
+select.ng-invalid.ng-touched {
+    border-color: #E29595 !important; /* Rouge pastel/métallique */
+    background-color: #FFF9F9;
+}
+
+/* Focus quand invalide */
+input.ng-invalid.ng-touched:focus {
+    box-shadow: 0 0 0 4px rgba(226, 149, 149, 0.15);
+}
+
+/* 2. État VALIDE : Vert émeraude doux */
+input.ng-valid.ng-touched, 
+select.ng-valid.ng-touched {
+    border-color: #95E2B8 !important; /* Vert pastel métallique */
+    background-color: #F9FFFB;
+}
+
+/* Focus quand valide */
+input.ng-valid.ng-touched:focus {
+    box-shadow: 0 0 0 4px rgba(149, 226, 184, 0.15);
+}
+
+/* 3. Messages de feedback sous les champs */
+.feedback-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: #C05E5E; /* Rouge sombre pour rester lisible */
+    margin-top: 6px;
+    min-height: 14px;
+    text-transform: none; /* Pas de majuscules pour les erreurs */
+    letter-spacing: 0;
+}
+
+/* 4. Bouton Désactivé (déjà présent, mais on s'assure qu'il est cohérent) */
+button:disabled {
+    background: #E2E2E7;
+    color: #A1A1AA;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}

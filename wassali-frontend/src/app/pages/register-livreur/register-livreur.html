@@ -3,42 +3,59 @@
   
   <form [formGroup]="coursierForm" (ngSubmit)="onSubmit()" class="registration-card">
 
-    <div class="row">
-      <div class="col-md-6 mb-4 position-relative">
-        <label class="form-label">Nom</label>
-        <input type="text" formControlName="nom" class="form-control custom-input" placeholder="Ex: Dupont" required>
-        <div class="feedback-text">Le nom est obligatoire</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nom</label>
+        <input type="text" formControlName="nom" placeholder="Votre nom">
+        <div class="feedback-text">
+          <span *ngIf="coursierForm.get('nom')?.touched && coursierForm.get('nom')?.invalid">Nom requis</span>
+        </div>
       </div>
 
-      <div class="col-md-6 mb-4 position-relative">
-        <label class="form-label">Prénom</label>
-        <input type="text" formControlName="prenom" class="form-control custom-input" placeholder="Ex: Jean" required>
-        <div class="feedback-text">Le prénom est obligatoire</div>
+      <div class="form-group">
+        <label>Prénom</label>
+        <input type="text" formControlName="prenom" placeholder="Votre prénom">
+        <div class="feedback-text">
+          <span *ngIf="coursierForm.get('prenom')?.touched && coursierForm.get('prenom')?.invalid">Prénom requis</span>
+        </div>
       </div>
     </div>
 
-    <div class="mb-4 position-relative">
-      <label class="form-label">Adresse Email</label>
-      <input type="email" formControlName="email" class="form-control custom-input" placeholder="nom@exemple.com" required>
-      <div class="feedback-text">Format d'email invalide (ex: nom@mail.com)</div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="exemple@gmail.com">
+      <div class="feedback-text">
+        <span *ngIf="coursierForm.get('email')?.touched && coursierForm.get('email')?.hasError('required')">L'email est obligatoire.</span>
+        <span *ngIf="coursierForm.get('email')?.dirty && coursierForm.get('email')?.hasError('pattern')">L'adresse doit être un @gmail.com valide.</span>
+      </div>
     </div>
 
-    <div class="mb-4 position-relative">
-      <label class="form-label">Mot de passe</label>
-      <input type="password" formControlName="password" class="form-control custom-input" placeholder="••••••••" required minlength="6">
-      <div class="feedback-text">Minimum 6 caractères requis</div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" formControlName="password" placeholder="********">
+      <div class="feedback-text">
+        <span *ngIf="coursierForm.get('password')?.touched && coursierForm.get('password')?.hasError('required')">Mot de passe requis.</span>
+        <span *ngIf="coursierForm.get('password')?.dirty && (coursierForm.get('password')?.invalid && !coursierForm.get('password')?.hasError('required'))">
+          8+ car. (1 Maj, 1 Chiffre, 1 Symbole)
+        </span>
+      </div>
     </div>
 
-    <div class="mb-4 position-relative">
-      <label class="form-label">Téléphone</label>
-      <input type="tel" formControlName="telephone" class="form-control custom-input" placeholder="Ex: +216 22 123 456" required>
-      <div class="feedback-text">Numéro de téléphone requis</div>
+    <div class="form-group">
+      <label>Téléphone</label>
+      <input type="text" formControlName="telephone" placeholder="Ex: 21654321">
+      <div class="feedback-text">
+        <span *ngIf="coursierForm.get('telephone')?.touched && coursierForm.get('telephone')?.hasError('required')">Numéro requis.</span>
+        <span *ngIf="coursierForm.get('telephone')?.dirty && coursierForm.get('telephone')?.hasError('pattern')">Doit contenir 8 chiffres.</span>
+      </div>
     </div>
 
-    <div class="mb-4 position-relative">
-      <label class="form-label">Adresse de résidence</label>
-      <input type="text" formControlName="adresse" class="form-control custom-input" placeholder="Ex: Rue de la Liberté, Tunis" required>
-      <div class="feedback-text">L'adresse est nécessaire</div>
+    <div class="form-group">
+      <label>Adresse</label>
+      <input type="text" formControlName="adresse" placeholder="Adresse complète">
+      <div class="feedback-text">
+        <span *ngIf="coursierForm.get('adresse')?.touched && coursierForm.get('adresse')?.invalid">L'adresse de livraison est requise.</span>
+      </div>
     </div>
 
     <div class="form-row">
@@ -57,16 +74,18 @@
       <div class="form-group">
         <label>N° Permis / CIN</label>
         <input type="text" formControlName="permis" placeholder=" " required>
-        <div class="feedback-text">Numéro officiel requis</div>
+        <div class="feedback-text">
+          <span *ngIf="coursierForm.get('permis')?.touched && coursierForm.get('permis')?.invalid">Le numéro de permis est requis.</span>
+        </div>
       </div>
     </div>
-
-    
-
+ 
     <div class="form-group">
       <label>Zone de livraison (Ville)</label>
       <input type="text" formControlName="zone_livraison" placeholder=" " required>
-      <div class="feedback-text">Ex: Tunis, Ariana...</div>
+      <div class="feedback-text">
+        <span *ngIf="coursierForm.get('zone_livraison')?.touched && coursierForm.get('zone_livraison')?.invalid">La zone de livraison est requise.</span>
+      </div>
     </div>
 
     <button type="submit" [disabled]="!coursierForm.valid">Devenir Coursier</button>
