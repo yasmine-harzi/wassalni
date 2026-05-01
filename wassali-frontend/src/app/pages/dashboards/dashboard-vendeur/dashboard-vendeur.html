@@ -3,7 +3,7 @@
     <div class="brand">
       <h1>WASSALI</h1>
     </div>
-    
+
     <nav class="menu-items">
       <a [class.active]="activeMenu === 'dashboard'" (click)="setMenu('dashboard')">
         Tableau de bord
@@ -57,12 +57,12 @@
             <span class="stat-label">En attente</span>
           </div>
           <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">
-            <span class="stat-number">{{ stats.en_transit }}</span>
-            <span class="stat-label">En transit</span>
+            <span class="stat-number">{{ stats.ramasse }}</span>
+            <span class="stat-label">Ramassé</span>
           </div>
           <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #F39C12, #D35400);">
-            <span class="stat-number">{{ stats.en_livraison }}</span>
-            <span class="stat-label">En livraison</span>
+            <span class="stat-number">{{ stats.en_route }}</span>
+            <span class="stat-label">En route</span>
           </div>
           <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #27AE60, #219150);">
             <span class="stat-number">{{ stats.livre }}</span>
@@ -72,14 +72,16 @@
       </section>
 
       <div class="charts-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-        <section class="chart-section" style="background: white; border-radius: 24px; padding: 1.5rem; border: 1px solid #E6EAF0;">
+        <section class="chart-section"
+          style="background: white; border-radius: 24px; padding: 1.5rem; border: 1px solid #E6EAF0;">
           <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Livraisons cette semaine</h3>
           <div style="height: 260px;">
             <canvas id="lineChart"></canvas>
           </div>
         </section>
 
-        <section class="chart-section" style="background: white; border-radius: 24px; padding: 1.5rem; border: 1px solid #E6EAF0;">
+        <section class="chart-section"
+          style="background: white; border-radius: 24px; padding: 1.5rem; border: 1px solid #E6EAF0;">
           <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Distribution par statut</h3>
           <div style="height: 260px;">
             <canvas id="pieChart"></canvas>
@@ -104,12 +106,12 @@
             <span class="stat-label">En attente</span>
           </div>
           <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">
-            <span class="stat-number">{{ stats.en_transit }}</span>
-            <span class="stat-label">En transit</span>
+            <span class="stat-number">{{ stats.ramasse }}</span>
+            <span class="stat-label">Ramassé</span>
           </div>
           <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #F39C12, #D35400);">
-            <span class="stat-number">{{ stats.en_livraison }}</span>
-            <span class="stat-label">En livraison</span>
+            <span class="stat-number">{{ stats.en_route }}</span>
+            <span class="stat-label">En route</span>
           </div>
           <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #27AE60, #219150);">
             <span class="stat-number">{{ stats.livre }}</span>
@@ -120,11 +122,7 @@
         <div class="search-bar-wrapper">
           <div class="search-bar">
             <i class="fas fa-search search-icon"></i>
-            <input
-              type="text"
-              [(ngModel)]="searchQuery"
-              (ngModelChange)="filtrerColis()"
-              class="search-input"
+            <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="filtrerColis()" class="search-input"
               placeholder="Rechercher par ID de colis ou nom de client...">
             <button *ngIf="searchQuery" class="search-clear" (click)="clearSearch()">✕</button>
           </div>
@@ -144,26 +142,27 @@
             </thead>
             <tbody>
               @for (c of colisFiltres; track c.id) {
-                <tr>
-                  <td>#{{ c.id }}</td>
-                  <td>{{ c.description }}</td>
-                  <td>{{ c.poids }} kg</td>
-                  <td>{{ c.nomClient || '—' }}</td>
-                  <td>
-                    <span class="badge" [class]="c.statut">{{ c.statut }}</span>
-                  </td>
-                  <td class="actions-cell">
-                    <button class="btn-sm btn-info" (click)="ouvrirDetailsModal(c)">Détails</button>
-                    <button class="btn-sm btn-annuler" (click)="annulerColis(c)">Annuler</button>
-                  </td>
-                </tr>
+              <tr>
+                <td>#{{ c.id }}</td>
+                <td>{{ c.description }}</td>
+                <td>{{ c.poids }} kg</td>
+                <td>{{ c.nomClient || '—' }}</td>
+                <td>
+                  <span class="badge" [class]="c.statut">{{ c.statut }}</span>
+                </td>
+                <td class="actions-cell">
+                  <button class="btn-sm btn-info" (click)="ouvrirDetailsModal(c)">Détails</button>
+                  <button class="btn-sm btn-annuler" (click)="supprimerColis(c)">Supprimer</button>
+                </td>
+              </tr>
               }
               @if (colisFiltres.length === 0) {
-                <tr>
-                  <td colspan="6" style="text-align: center; padding: 2rem; color: #6B7A8A;">
-                    {{ searchQuery ? 'Aucun résultat pour "' + searchQuery + '".' : 'Aucun colis enregistré pour le moment.' }}
-                  </td>
-                </tr>
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem; color: #6B7A8A;">
+                  {{ searchQuery ? 'Aucun résultat pour "' + searchQuery + '".' : 'Aucun colis enregistré pour le
+                  moment.' }}
+                </td>
+              </tr>
               }
             </tbody>
           </table>
@@ -177,7 +176,8 @@
         <div class="section-header">
           <div>
             <h3>Mes clients</h3>
-            <p style="margin: 0.25rem 0 0; color: #6B7A8A; font-size: 0.88rem; font-weight: 400;">Gérez votre base de clients</p>
+            <p style="margin: 0.25rem 0 0; color: #6B7A8A; font-size: 0.88rem; font-weight: 400;">Gérez votre base de
+              clients</p>
           </div>
           <button class="btn-primary btn-sm-action" (click)="openAddClientModal()">+ Ajouter un client</button>
         </div>
@@ -185,11 +185,7 @@
         <div class="search-bar-wrapper" style="margin-top: 1rem;">
           <div class="search-bar">
             <i class="fas fa-search search-icon"></i>
-            <input
-              type="text"
-              [(ngModel)]="searchClientQuery"
-              (ngModelChange)="filtrerClients()"
-              class="search-input"
+            <input type="text" [(ngModel)]="searchClientQuery" (ngModelChange)="filtrerClients()" class="search-input"
               placeholder="Rechercher un client...">
             <button *ngIf="searchClientQuery" class="search-clear" (click)="clearSearchClient()">✕</button>
           </div>
@@ -197,34 +193,38 @@
 
         <div class="clients-grid">
           @for (cl of clientsFiltres; track cl.id) {
-            <div class="client-card">
-              <div class="client-card-header">
-                <div class="client-avatar">{{ (cl.nom || '?')[0] | uppercase }}</div>
-                <div>
-                  <h4 class="client-name">{{ cl.nom }}</h4>
-                  <p class="client-tag">{{ cl.type_client === 'entreprise' ? 'Client entreprise' : 'Client régulier' }}</p>
-                </div>
+          <div class="client-card">
+            <div class="client-card-header">
+              <div class="client-avatar">{{ (cl.nom || '?')[0] | uppercase }}</div>
+              <div class="client-header-info">
+                <h4 class="client-name">{{ cl.nom }}</h4>
+                <p class="client-tag">{{ cl.type_client === 'entreprise' ? 'Client entreprise' : 'Client régulier' }}</p>
               </div>
-              <div class="client-card-body">
-                <div class="client-info-row" *ngIf="cl.telephone">
-                  <i class="fas fa-phone client-icon"></i>
-                  <span>{{ cl.telephone }}</span>
-                </div>
-                <div class="client-info-row">
-                  <i class="fas fa-envelope client-icon"></i>
-                  <span>{{ cl.email }}</span>
-                </div>
-                <div class="client-info-row" *ngIf="cl.adresse">
-                  <i class="fas fa-map-marker-alt client-icon"></i>
-                  <span>{{ cl.adresse }}</span>
-                </div>
+              <button class="btn-delete-client" (click)="supprimerClient(cl)" title="Supprimer le client">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <div class="client-card-body">
+              <div class="client-info-row" *ngIf="cl.telephone">
+                <i class="fas fa-phone client-icon"></i>
+                <span>{{ cl.telephone }}</span>
+              </div>
+              <div class="client-info-row">
+                <i class="fas fa-envelope client-icon"></i>
+                <span>{{ cl.email }}</span>
+              </div>
+              <div class="client-info-row" *ngIf="cl.adresse">
+                <i class="fas fa-map-marker-alt client-icon"></i>
+                <span>{{ cl.adresse }}</span>
               </div>
             </div>
+          </div>
           }
           @if (clientsFiltres.length === 0) {
-            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #6B7A8A;">
-              {{ searchClientQuery ? 'Aucun client trouvé pour "' + searchClientQuery + '".' : 'Aucun client enregistré. Commencez par en ajouter un !' }}
-            </div>
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #6B7A8A;">
+            {{ searchClientQuery ? 'Aucun client trouvé pour "' + searchClientQuery + '".' : 'Aucun client enregistré.
+            Commencez par en ajouter un !' }}
+          </div>
           }
         </div>
       </section>
@@ -249,18 +249,19 @@
             </thead>
             <tbody>
               @for (h of historiqueColis; track h.id) {
-                <tr>
-                  <td>#{{ h.id }}</td>
-                  <td>{{ h.description }}</td>
-                  <td>{{ h.poids }} kg</td>
-                  <td>{{ h.date }}</td>
-                  <td><span class="badge" [class]="h.statut">{{ h.statut }}</span></td>
-                </tr>
+              <tr>
+                <td>#{{ h.id }}</td>
+                <td>{{ h.description }}</td>
+                <td>{{ h.poids }} kg</td>
+                <td>{{ h.date }}</td>
+                <td><span class="badge" [class]="h.statut">{{ h.statut }}</span></td>
+              </tr>
               }
               @if (historiqueColis.length === 0) {
-                <tr>
-                  <td colspan="5" style="text-align: center; padding: 2rem; color: #6B7A8A;">Aucune expédition dans l'historique.</td>
-                </tr>
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: #6B7A8A;">Aucune expédition dans
+                  l'historique.</td>
+              </tr>
               }
             </tbody>
           </table>
@@ -393,127 +394,164 @@
 
 <!-- ======================== MODAL NOUVEAU COLIS ======================== -->
 @if (showModal) {
-  <div class="modal-overlay" (click)="showModal = false">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Nouvelle Expédition</h2>
-        <button class="close-btn" (click)="showModal = false">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Description du produit :</label>
-          <input type="text" [(ngModel)]="newColis.description" class="form-input" placeholder="Ex: Chaussures de sport">
-        </div>
-        <div class="form-group">
-          <label>Poids (kg) :</label>
-          <input type="number" [(ngModel)]="newColis.poids" class="form-input" placeholder="0.0">
-        </div>
-        <div class="form-group">
-          <label>Client concerné :</label>
-          <select [(ngModel)]="newColis.id_client" class="form-input form-select">
-            <option [ngValue]="null" disabled>-- Sélectionner un client --</option>
-            @for (client of clients; track client.id) {
-              <option [ngValue]="client.id">{{ client.nom }} — {{ client.email }}</option>
-            }
-          </select>
-          <span *ngIf="clients.length === 0" class="form-hint">Aucun client disponible. Ajoutez d'abord un client.</span>
+<div class="modal-overlay" (click)="showModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Nouvelle Expédition</h2>
+      <button class="close-btn" (click)="showModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Description du produit :</label>
+        <input type="text" [(ngModel)]="newColis.description" #descRef="ngModel" required class="form-input"
+          [class.is-invalid]="descRef.invalid && (descRef.dirty || descRef.touched)"
+          placeholder="Ex: Chaussures de sport">
+        <div *ngIf="descRef.invalid && (descRef.dirty || descRef.touched)" class="error-msg">
+          La description est requise.
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn-outline" (click)="showModal = false">Annuler</button>
-        <button class="btn-primary" (click)="ajouterColis()">Enregistrer</button>
+
+      <div class="form-group">
+        <label>Poids (kg) :</label>
+        <input type="number" [(ngModel)]="newColis.poids" #poidsRef="ngModel" required min="0.1" class="form-input"
+          [class.is-invalid]="poidsRef.invalid && (poidsRef.dirty || poidsRef.touched)" placeholder="0.0">
+        <div *ngIf="poidsRef.invalid && (poidsRef.dirty || poidsRef.touched)" class="error-msg">
+          <span *ngIf="poidsRef.errors?.['required']">Le poids est requis.</span>
+          <span *ngIf="poidsRef.errors?.['min']">Le poids doit être supérieur à 0.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Client concerné :</label>
+        <select [(ngModel)]="newColis.id_client" #clientRef="ngModel" required class="form-input form-select"
+          [class.is-invalid]="clientRef.invalid && (clientRef.dirty || clientRef.touched)">
+          <option [ngValue]="null" disabled>-- Sélectionner un client --</option>
+          @for (client of clients; track client.id) {
+          <option [ngValue]="client.id">{{ client.nom }} — {{ client.email }}</option>
+          }
+        </select>
+        <div *ngIf="clientRef.invalid && (clientRef.dirty || clientRef.touched)" class="error-msg">
+          Veuillez sélectionner un client.
+        </div>
+        <span *ngIf="clients.length === 0" class="form-hint">Aucun client disponible. Ajoutez d'abord un client.</span>
       </div>
     </div>
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="showModal = false">Annuler</button>
+      <button class="btn-primary" (click)="ajouterColis()">Enregistrer</button>
+    </div>
   </div>
+</div>
 }
 
 <!-- ======================== MODAL AJOUTER CLIENT ======================== -->
 @if (showClientModal) {
-  <div class="modal-overlay" (click)="showClientModal = false">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal-header modal-header--teal">
-        <h2>Nouveau Client</h2>
-        <button class="close-btn" (click)="showClientModal = false">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Nom complet :</label>
-          <input type="text" [(ngModel)]="newClient.nom" class="form-input" placeholder="Ex: Ahmed Ben Ali">
-        </div>
-        <div class="form-group">
-          <label>Email :</label>
-          <input type="email" [(ngModel)]="newClient.email" class="form-input" placeholder="client@email.com">
-        </div>
-        <div class="form-group">
-          <label>Téléphone :</label>
-          <input type="tel" [(ngModel)]="newClient.telephone" class="form-input" placeholder="Ex: +216 20 000 000">
-        </div>
-        <div class="form-group">
-          <label>Adresse :</label>
-          <input type="text" [(ngModel)]="newClient.adresse" class="form-input" placeholder="Ex: 12 Rue de la Liberté, Tunis">
+<div class="modal-overlay" (click)="showClientModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header modal-header--teal">
+      <h2>Nouveau Client</h2>
+      <button class="close-btn" (click)="showClientModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nom complet :</label>
+        <input type="text" [(ngModel)]="newClient.nom" #nomRef="ngModel" required class="form-input"
+          [class.is-invalid]="nomRef.invalid && (nomRef.dirty || nomRef.touched)" placeholder="Ex: Ahmed Ben Ali">
+        <div *ngIf="nomRef.invalid && (nomRef.dirty || nomRef.touched)" class="error-msg">
+          Le nom est requis.
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn-outline" (click)="showClientModal = false">Annuler</button>
-        <button class="btn-teal" (click)="ajouterClient()">Enregistrer</button>
+
+      <div class="form-group">
+        <label>Email :</label>
+        <input type="email" [(ngModel)]="newClient.email" #emailRef="ngModel" required email class="form-input"
+          [class.is-invalid]="emailRef.invalid && (emailRef.dirty || emailRef.touched)" placeholder="client@email.com">
+        <div *ngIf="emailRef.invalid && (emailRef.dirty || emailRef.touched)" class="error-msg">
+          <span *ngIf="emailRef.errors?.['required']">L'email est requis.</span>
+          <span *ngIf="emailRef.errors?.['email']">Veuillez entrer un email valide.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Téléphone :</label>
+        <input type="tel" [(ngModel)]="newClient.telephone" #telRef="ngModel" required pattern="[0-9]{8,}"
+          class="form-input" [class.is-invalid]="telRef.invalid && (telRef.dirty || telRef.touched)"
+          placeholder="Ex: 20111222">
+        <div *ngIf="telRef.invalid && (telRef.dirty || telRef.touched)" class="error-msg">
+          <span *ngIf="telRef.errors?.['required']">Le téléphone est requis.</span>
+          <span *ngIf="telRef.errors?.['pattern']">Minimum 8 chiffres (chiffres uniquement).</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Adresse :</label>
+        <input type="text" [(ngModel)]="newClient.adresse" #adresseRef="ngModel" required class="form-input"
+          [class.is-invalid]="adresseRef.invalid && (adresseRef.dirty || adresseRef.touched)"
+          placeholder="Ex: 12 Rue de la Liberté, Tunis">
+        <div *ngIf="adresseRef.invalid && (adresseRef.dirty || adresseRef.touched)" class="error-msg">
+          L'adresse est requise.
+        </div>
       </div>
     </div>
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="showClientModal = false">Annuler</button>
+      <button class="btn-teal" (click)="ajouterClient()">Enregistrer</button>
+    </div>
   </div>
+</div>
 }
 
 <!-- ======================== MODAL DÉTAILS COLIS ======================== -->
 @if (showDetailsModal && colisSelectionne) {
-  <div class="modal-overlay" (click)="showDetailsModal = false">
-    <div class="modal modal-lg" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Détails — Colis #{{ colisSelectionne.id }}</h2>
-        <button class="close-btn" (click)="showDetailsModal = false">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="details-grid">
-          <div class="detail-item">
-            <span class="detail-label">Description</span>
-            <span class="detail-value">{{ colisSelectionne.description }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Poids</span>
-            <span class="detail-value">{{ colisSelectionne.poids }} kg</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Client</span>
-            <span class="detail-value">{{ colisSelectionne.nomClient || '—' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Date de création</span>
-            <span class="detail-value">{{ colisSelectionne.date_creation || colisSelectionne.date || '—' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Statut actuel</span>
-            <span class="badge" [class]="colisSelectionne.statut">{{ colisSelectionne.statut }}</span>
-          </div>
-          <div class="detail-item" *ngIf="colisSelectionne.nomCoursier">
-            <span class="detail-label">Coursier assigné</span>
-            <span class="detail-value">{{ colisSelectionne.nomCoursier }}</span>
-          </div>
+<div class="modal-overlay" (click)="showDetailsModal = false">
+  <div class="modal modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Détails — Colis #{{ colisSelectionne.id }}</h2>
+      <button class="close-btn" (click)="showDetailsModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="details-grid">
+        <div class="detail-item">
+          <span class="detail-label">Description</span>
+          <span class="detail-value">{{ colisSelectionne.description }}</span>
         </div>
+        <div class="detail-item">
+          <span class="detail-label">Poids</span>
+          <span class="detail-value">{{ colisSelectionne.poids }} kg</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Client</span>
+          <span class="detail-value">{{ colisSelectionne.nomClient || '—' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Date de création</span>
+          <span class="detail-value">{{ colisSelectionne.date_creation || colisSelectionne.date || '—' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Statut actuel</span>
+          <span class="badge" [class]="colisSelectionne.statut">{{ colisSelectionne.statut }}</span>
+        </div>
+        <div class="detail-item" *ngIf="colisSelectionne.nomCoursier">
+          <span class="detail-label">Coursier assigné</span>
+          <span class="detail-value">{{ colisSelectionne.nomCoursier }}</span>
+        </div>
+      </div>
 
-        <div class="form-group" style="margin-top: 1.5rem; border-top: 1px solid #E6EAF0; padding-top: 1.25rem;">
-          <label>Changer le statut :</label>
-          <select [(ngModel)]="nouveauStatut" class="form-input form-select">
-            <option value="attente">En attente</option>
-            <option value="ramassé">Ramassé</option>
-            <option value="en_route">En route</option>
-            <option value="en_transit">En transit</option>
-            <option value="en_livraison">En livraison</option>
-            <option value="livré">Livré</option>
-            <option value="annulé">Annulé</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" (click)="showDetailsModal = false">Fermer</button>
-        <button class="btn-primary" (click)="changerStatut()">Enregistrer le statut</button>
+      <div class="form-group" style="margin-top: 1.5rem; border-top: 1px solid #E6EAF0; padding-top: 1.25rem;">
+        <label>Changer le statut :</label>
+        <select [(ngModel)]="nouveauStatut" class="form-input form-select">
+          <option value="attente">En attente</option>
+          <option value="ramassé">Ramassé</option>
+          <option value="en_route">En route</option>
+          <option value="livré">Livré</option>
+          <option value="annulé">Annulé</option>
+        </select>
       </div>
     </div>
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="showDetailsModal = false">Fermer</button>
+      <button class="btn-primary" (click)="changerStatut()">Enregistrer le statut</button>
+    </div>
   </div>
+</div>
 }

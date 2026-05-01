@@ -22,9 +22,9 @@ export class VendeurService {
     return this.http.post<any>(`${this.apiUrl}/colis/ajouter`, colisData);
   }
 
-  // Annuler un colis (statut → 'annulé')
-  annulerColis(idColis: number): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/colis/${idColis}/annuler`, {});
+  // Supprimer un colis définitivement
+  supprimerColis(idColis: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/colis/${idColis}`);
   }
 
   // Changer le statut d'un colis (depuis le modal Détails)
@@ -47,6 +47,11 @@ export class VendeurService {
   // Ajouter un client
   ajouterClient(clientData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/clients/ajouter`, clientData);
+  }
+
+  // Supprimer un client
+  supprimerClient(idClient: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/clients/${idClient}`);
   }
 
   // ── Profil vendeur ─────────────────────────────────────

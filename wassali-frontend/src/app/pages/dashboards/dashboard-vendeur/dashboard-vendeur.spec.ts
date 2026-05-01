@@ -12,10 +12,10 @@ describe('DashboardVendeurComponent', () => {
 
   const mockColis = [
     { id: 1,  description: 'Téléphone',  poids: 0.5, statut: 'attente',      nomClient: 'Ali Ben Salah' },
-    { id: 2,  description: 'Ordinateur', poids: 2.0, statut: 'en_transit',   nomClient: 'Sana Trabelsi' },
-    { id: 3,  description: 'Tablette',   poids: 1.0, statut: 'en_livraison', nomClient: 'Ali Ben Salah' },
-    { id: 4,  description: 'Écran',      poids: 3.5, statut: 'livre',        nomClient: 'Rim Hamdi' },
-    { id: 5,  description: 'Clavier',    poids: 0.8, statut: 'livre',        nomClient: 'Sana Trabelsi' },
+    { id: 2,  description: 'Ordinateur', poids: 2.0, statut: 'ramassé',   nomClient: 'Sana Trabelsi' },
+    { id: 3,  description: 'Tablette',   poids: 1.0, statut: 'en_route', nomClient: 'Ali Ben Salah' },
+    { id: 4,  description: 'Écran',      poids: 3.5, statut: 'livré',        nomClient: 'Rim Hamdi' },
+    { id: 5,  description: 'Clavier',    poids: 0.8, statut: 'livré',        nomClient: 'Sana Trabelsi' },
     { id: 12, description: 'Souris',     poids: 0.3, statut: 'attente',      nomClient: 'Youssef Mrad' },
   ];
 
@@ -123,8 +123,8 @@ describe('DashboardVendeurComponent', () => {
 
     it('devrait calculer les stats après chargement', () => {
       expect(component.stats.attente).toBe(2);
-      expect(component.stats.en_transit).toBe(1);
-      expect(component.stats.en_livraison).toBe(1);
+      expect(component.stats.ramasse).toBe(1);
+      expect(component.stats.en_route).toBe(1);
       expect(component.stats.livre).toBe(2);
     });
 
@@ -144,15 +144,15 @@ describe('DashboardVendeurComponent', () => {
       component.colis = [];
       component.calculerStats();
       expect(component.stats.attente).toBe(0);
-      expect(component.stats.en_transit).toBe(0);
-      expect(component.stats.en_livraison).toBe(0);
+      expect(component.stats.ramasse).toBe(0);
+      expect(component.stats.en_route).toBe(0);
       expect(component.stats.livre).toBe(0);
     });
 
-    it('ne doit pas compter "livré" avec accent comme "livre"', () => {
+    it('doit compter "livré" avec accent', () => {
       component.colis = [{ id: 99, statut: 'livré' }];
       component.calculerStats();
-      expect(component.stats.livre).toBe(0);
+      expect(component.stats.livre).toBe(1);
     });
   });
 
@@ -370,8 +370,8 @@ describe('DashboardVendeurComponent', () => {
       expect(component.historiqueColis.length).toBe(3);
     });
 
-    it('devrait contenir une entrée avec statut "annule"', () => {
-      expect(component.historiqueColis.filter(h => h.statut === 'annule').length).toBe(1);
+    it('devrait contenir une entrée avec statut "annulé"', () => {
+      expect(component.historiqueColis.filter(h => h.statut === 'annulé').length).toBe(1);
     });
 
     it('chaque entrée doit avoir les champs requis', () => {

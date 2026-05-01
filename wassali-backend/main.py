@@ -201,39 +201,32 @@ def ajouter_colis(colis: ColisSchema):
     finally:
         conn.close()
 
-# PUT /api/colis/{id_colis}/annuler
-#   Annule un colis (statut → 'annulé') — uniquement si encore en 'attente'
-@app.put("/api/colis/{id_colis}/annuler")
-def annuler_colis(id_colis: int):
+# DELETE /api/colis/{id_colis}
+#   Supprime définitivement un colis de la base de données
+@app.delete("/api/colis/{id_colis}")
+def supprimer_colis(id_colis: int):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        cursor.execute("SELECT statut, id_vendeur FROM colis WHERE id_colis = %s", (id_colis,))
-        row = cursor.fetchone()
-        if not row:
+        cursor.execute("SELECT id_colis FROM colis WHERE id_colis = %s", (id_colis,))
+        if not cursor.fetchone():
             raise HTTPException(status_code=404, detail="Colis introuvable")
-        # Statuts annulables : côté DB l'ENUM est 'attente' et 'ramassé'
-        statuts_annulables = {"attente", "ramassé", "en_route"}
-        if row["statut"] not in statuts_annulables:
-            raise HTTPException(status_code=400, detail=f"Ce colis ne peut plus être annulé (statut actuel : {row['statut']})")
-
-        cursor.execute("UPDATE colis SET statut = 'annulé' WHERE id_colis = %s", (id_colis,))
+        
+        # Supprimer le colis (les suivis associés seront supprimés par ON DELETE CASCADE)
+        cursor.execute("DELETE FROM colis WHERE id_colis = %s", (id_colis,))
         conn.commit()
-        return {"message": "Colis annulé avec succès"}
-    except HTTPException:
-        raise
+        return {"message": "Colis supprimé avec succès"}
     except Exception as e:
-        conn.rollback()
+        if conn: conn.rollback()
         raise HTTPException(status_code=500, detail=str(e))
     finally:
-        conn.close()
+        if conn: conn.close()
 
 # PUT /api/colis/{id_colis}/statut
 #   Change le statut d'un colis (depuis le modal Détails du vendeur)
 @app.put("/api/colis/{id_colis}/statut")
 def changer_statut_colis(id_colis: int, data: StatutSchema):
-    # Statuts officiels avec accents
-    statuts_valides = {"attente", "ramassé", "en_route", "livré", "annulé", "en_transit", "en_livraison"}
+    statuts_valides = {"attente", "ramassé", "en_route", "livré", "annulé"}
     if data.statut not in statuts_valides:
         raise HTTPException(status_code=400, detail=f"Statut invalide : {data.statut}")
 
@@ -361,6 +354,44 @@ def ajouter_client(data: ClientSimpleSchema):
     except Exception as e:
         if conn: conn.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn: conn.close()
+
+# DELETE /api/clients/{id_client}
+#   Supprime un client (et son utilisateur associé)
+@app.delete("/api/clients/{id_client}")
+def supprimer_client(id_client: int):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # Trouver l'id_user associé
+        cursor.execute("SELECT id_user FROM client WHERE id_client = %s", (id_client,))
+        row = cursor.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Client introuvable")
+        
+        id_user = row["id_user"]
+        
+        # 1. Supprimer tous les colis du client
+        # (Les suivis_colis seront supprimés par ON DELETE CASCADE dans la DB)
+        cursor.execute("DELETE FROM colis WHERE id_client = %s", (id_client,))
+        
+        # 2. Supprimer le client (la table client)
+        cursor.execute("DELETE FROM client WHERE id_client = %s", (id_client,))
+        
+        # 3. Supprimer l'utilisateur associé
+        # (Les notifications seront supprimées par ON DELETE CASCADE dans la DB)
+        cursor.execute("DELETE FROM users WHERE id_user = %s", (id_user,))
+        
+        conn.commit()
+        return {"message": "Client et ses colis supprimés avec succès"}
+    except Exception as e:
+        if conn: conn.rollback()
+        # Si erreur de clé étrangère, on renvoie un message plus clair
+        error_msg = str(e)
+        if "Foreign key constraint" in error_msg or "1451" in error_msg:
+            raise HTTPException(status_code=400, detail="Impossible de supprimer ce client car il possède des colis enregistrés.")
+        raise HTTPException(status_code=500, detail=error_msg)
     finally:
         if conn: conn.close()
 

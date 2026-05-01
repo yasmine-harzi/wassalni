@@ -11,7 +11,7 @@ describe('VendeurService', () => {
   // ── Données mock ───────────────────────────────────────
   const mockColis = [
     { id: 1, description: 'Téléphone',  poids: 0.5, statut: 'attente',    id_vendeur: 1, id_client: 2 },
-    { id: 2, description: 'Ordinateur', poids: 2.0, statut: 'en_transit', id_vendeur: 1, id_client: 3 },
+    { id: 2, description: 'Ordinateur', poids: 2.0, statut: 'ramassé', id_vendeur: 1, id_client: 3 },
   ];
 
   const mockClients = [
@@ -57,7 +57,7 @@ describe('VendeurService', () => {
       service.getMesColis(1).subscribe(data => {
         expect(data.length).toBe(2);
         expect(data[0].description).toBe('Téléphone');
-        expect(data[1].statut).toBe('en_transit');
+        expect(data[1].statut).toBe('ramassé');
       });
 
       const req = httpMock.expectOne(`${API}/vendeur/1/colis`);

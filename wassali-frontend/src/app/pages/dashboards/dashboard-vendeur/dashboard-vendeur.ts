@@ -39,7 +39,7 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   searchQuery: string = '';
 
   // ── Stats ──────────────────────────────────────────────
-  stats = { attente: 0, en_transit: 0, en_livraison: 0, livre: 0 };
+  stats = { attente: 0, ramasse: 0, en_route: 0, livre: 0 };
 
   // ── Profil ─────────────────────────────────────────────
   profil = { nom: 'yosra boughattas', email: 'user@example.com', telephone: '+216 20 123 456' };
@@ -47,10 +47,10 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   // ── Paramètres généraux ────────────────────────────────
   parametres = {
     notifEmail: true,
-    notifSms:   true,
-    notifPush:  true,
-    langue:     'fr',
-    auth2fa:    false
+    notifSms: true,
+    notifPush: true,
+    langue: 'fr',
+    auth2fa: false
   };
 
   // ── Historique ─────────────────────────────────────────
@@ -62,7 +62,7 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   private pieChart: Chart | null = null;
   private chartsNeedRender: boolean = false;
 
-  constructor(private vendeurService: VendeurService) {}
+  constructor(private vendeurService: VendeurService) { }
 
   // ── Navigation ─────────────────────────────────────────
   setMenu(menu: string): void {
@@ -88,7 +88,7 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   ngAfterViewChecked(): void {
     if (this.chartsNeedRender && this.activeMenu === 'dashboard') {
       const lineCanvas = document.getElementById('lineChart') as HTMLCanvasElement;
-      const pieCanvas  = document.getElementById('pieChart')  as HTMLCanvasElement;
+      const pieCanvas = document.getElementById('pieChart') as HTMLCanvasElement;
       if (lineCanvas && pieCanvas) {
         this.chartsNeedRender = false;
         setTimeout(() => {
@@ -116,8 +116,8 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
     if (!canvas) return;
     // Répartit le total des colis actifs sur 7 jours avec une légère variation
     const total = this.colis.length;
-    const base  = Math.max(1, Math.round(total / 7));
-    const weekData = [0,1,2,3,4,5,6].map(i => {
+    const base = Math.max(1, Math.round(total / 7));
+    const weekData = [0, 1, 2, 3, 4, 5, 6].map(i => {
       const variation = Math.round((Math.sin(i) + 1) * base * 0.4);
       return base + variation;
     });
@@ -145,12 +145,12 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
     this.pieChart = new Chart(canvas, {
       type: 'pie',
       data: {
-        labels: ['En attente', 'En transit', 'En livraison', 'Livré'],
+        labels: ['En attente', 'Ramassé', 'En route', 'Livré'],
         datasets: [{
           data: [
             this.stats.attente,
-            this.stats.en_transit,
-            this.stats.en_livraison,
+            this.stats.ramasse,
+            this.stats.en_route,
             this.stats.livre
           ],
           backgroundColor: ['#3498DB', '#9B59B6', '#F39C12', '#27AE60']
@@ -191,10 +191,10 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   }
 
   calculerStats(): void {
-    this.stats.attente      = this.colis.filter(c => c.statut === 'attente').length;
-    this.stats.en_transit   = this.colis.filter(c => c.statut === 'en_transit').length;
-    this.stats.en_livraison = this.colis.filter(c => c.statut === 'en_livraison').length;
-    this.stats.livre        = this.colis.filter(c => c.statut === 'livré').length;
+    this.stats.attente = this.colis.filter(c => c.statut === 'attente').length;
+    this.stats.ramasse = this.colis.filter(c => c.statut === 'ramassé').length;
+    this.stats.en_route = this.colis.filter(c => c.statut === 'en_route').length;
+    this.stats.livre = this.colis.filter(c => c.statut === 'livré').length;
   }
 
   openAddColisModal(): void {
@@ -202,6 +202,16 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   }
 
   ajouterColis(): void {
+    if (!this.newColis.description || !this.newColis.poids || !this.newColis.id_client) {
+      alert("Veuillez remplir tous les champs obligatoires (Description, Poids et Client).");
+      return;
+    }
+
+    if (this.newColis.poids <= 0) {
+      alert("Le poids doit être supérieur à 0.");
+      return;
+    }
+
     this.vendeurService.ajouterColis(this.newColis).subscribe({
       next: (colisAjoute) => {
         // Ajouter en tête de liste active
@@ -216,38 +226,30 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
           statut: colisAjoute.statut
         });
         this.calculerStats();
+        alert("Colis ajouté avec succès !");
         this.showModal = false;
+        this.newClient = { nom: '', email: '', telephone: '', adresse: '' }; // Reset
         this.newColis = { description: '', poids: 0, id_vendeur: 1, id_client: null };
       },
       error: (err) => console.error('Erreur ajout colis:', err)
     });
   }
 
-  // ── Annulation ─────────────────────────────────────────
-  annulerColis(c: any): void {
-    if (!confirm(`Annuler le colis #${c.id} — "${c.description}" ?`)) return;
+  // ── Suppression ─────────────────────────────────────────
+  supprimerColis(c: any): void {
+    if (!confirm(`Supprimer définitivement le colis #${c.id} — "${c.description}" ?`)) return;
 
-    this.vendeurService.annulerColis(c.id).subscribe({
+    this.vendeurService.supprimerColis(c.id).subscribe({
       next: () => {
-        // Mettre à jour dans l'historique (reste visible avec statut annulé)
-        const inHisto = this.historiqueColis.find(h => h.id === c.id);
-        if (inHisto) {
-          inHisto.statut = 'annulé';
-        } else {
-          this.historiqueColis.unshift({
-            id: c.id,
-            description: c.description,
-            poids: c.poids,
-            date: new Date().toISOString().split('T')[0],
-            statut: 'annulé'
-          });
-        }
         // Retirer de la liste active
         this.colis = this.colis.filter(x => x.id !== c.id);
+        // Retirer également de l'historique local pour la cohérence
+        this.historiqueColis = this.historiqueColis.filter(x => x.id !== c.id);
+
         this.filtrerColis();
         this.calculerStats();
       },
-      error: (err) => console.error('Erreur annulation:', err)
+      error: (err) => console.error('Erreur suppression:', err)
     });
   }
 
@@ -295,14 +297,56 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   }
 
   ajouterClient(): void {
+    // Validation manuelle avant envoi
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{8,}$/;
+
+    if (!this.newClient.nom || !this.newClient.email || !this.newClient.telephone || !this.newClient.adresse) {
+      alert("Veuillez remplir tous les champs obligatoires.");
+      return;
+    }
+
+    if (!emailRegex.test(this.newClient.email)) {
+      alert("L'adresse email n'est pas valide.");
+      return;
+    }
+
+    if (!phoneRegex.test(this.newClient.telephone)) {
+      alert("Le numéro de téléphone doit contenir au moins 8 chiffres (chiffres uniquement).");
+      return;
+    }
+
     this.vendeurService.ajouterClient(this.newClient).subscribe({
       next: (clientAjoute) => {
         this.clients.push(clientAjoute);
         this.filtrerClients();
+        alert("Client enregistré avec succès !");
         this.showClientModal = false;
         this.newClient = { nom: '', email: '', telephone: '', adresse: '' };
       },
       error: (err) => console.error('Erreur ajout client:', err)
+    });
+  }
+
+  supprimerClient(cl: any): void {
+    if (!confirm(`Supprimer le client "${cl.nom}" et ses colis ?`)) return;
+
+    this.vendeurService.supprimerClient(cl.id).subscribe({
+      next: () => {
+        // Retirer de la liste locale des clients
+        this.clients = this.clients.filter(x => x.id !== cl.id);
+        this.filtrerClients();
+        // Rafraîchir la liste des colis car ils ont été supprimés en cascade
+        this.chargerColis();
+      },
+      error: (err) => {
+        console.error('Erreur suppression client:', err);
+        if (err.status === 400) {
+          alert(err.error.detail || 'Impossible de supprimer ce client.');
+        } else {
+          alert('Une erreur est survenue lors de la suppression.');
+        }
+      }
     });
   }
 
@@ -313,8 +357,8 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
       return;
     }
     this.clientsFiltres = this.clients.filter(cl =>
-      (cl.nom    && cl.nom.toLowerCase().includes(q))    ||
-      (cl.email  && cl.email.toLowerCase().includes(q))  ||
+      (cl.nom && cl.nom.toLowerCase().includes(q)) ||
+      (cl.email && cl.email.toLowerCase().includes(q)) ||
       (cl.adresse && cl.adresse.toLowerCase().includes(q))
     );
   }
