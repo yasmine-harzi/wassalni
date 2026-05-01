@@ -1,5 +1,5 @@
 <div class="form-container">
-  <h2>Inscription Client</h2>
+  <h2>Inscription Vendeur</h2>
   
   <form [formGroup]="vendeurForm" (ngSubmit)="onSubmit()">
     
@@ -13,7 +13,7 @@
       <input type="email" formControlName="email" placeholder="exemple@mail.com">
     </div>
 
-    <button type="submit" [disabled]="!vendeurForm.valid">
+    <button type="submit" ="!vendeurForm.valid">
       S'inscrire
     </button>
     

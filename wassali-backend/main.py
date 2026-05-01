@@ -6,7 +6,7 @@ from typing import Optional, List
 
 app = FastAPI()
 
-# 1. Configuration CORS pour Angular
+# 1. Configuration CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:4200"],
@@ -15,7 +15,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 2. Modèles de données (Pydantic)
+# 2. Modèles de données
+class LoginSchema(BaseModel):
+    email: str
+    password: str
+
 class UserBase(BaseModel):
     nom: str
     prenom: str
@@ -27,14 +31,26 @@ class UserBase(BaseModel):
 class ClientSchema(UserBase):
     type_client: str = "particulier"
 
-class VendeurSchema(UserBase):
-    nom_entreprise: str
-    adresse_entreprise: str
+# ── Modèles Dashboard Vendeur ──────────────────────────────
+class ColisSchema(BaseModel):
+    description: str
+    poids: float
+    id_vendeur: int
+    id_client: int
 
-class CoursierSchema(UserBase):
-    vehicule: str
-    latitude_actuelle: Optional[float] = 0.0
-    longitude_actuelle: Optional[float] = 0.0
+class ClientSimpleSchema(BaseModel):
+    nom: str
+    prenom: str = ""
+    email: str
+    telephone: Optional[str] = None
+    adresse: Optional[str] = None
+
+class ProfilVendeurSchema(BaseModel):
+    nom: str
+    email: str
+
+class StatutSchema(BaseModel):
+    statut: str
 
 # 3. Connexion DB
 def get_db_connection():
@@ -45,93 +61,364 @@ def get_db_connection():
         database="wassali-backend"
     )
 
-def handle_registration(user_data, role_table, extra_fields):
+# --- LOGIQUE D'INSCRIPTION SYNCHRONISÉE ---
+def handle_registration(user_data, role_name, extra_fields):
     conn = None
     try:
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
 
-        # ÉTAPE 1 : Insertion User
+        # ÉTAPE 1 : Insertion dans 'users' (Infos générales + Profil + Login)
+        # CORRECTION : On utilise 'password' pour correspondre à ton SQL
         sql_user = "INSERT INTO users (nom, prenom, email, password, telephone, adresse, role, is_active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        val_user = (user_data.nom, user_data.prenom, user_data.email, user_data.password, user_data.telephone, user_data.adresse, role_table, 1)
+        val_user = (user_data.nom, user_data.prenom, user_data.email, user_data.password, user_data.telephone, user_data.adresse, role_name, 1)
         cursor.execute(sql_user, val_user)
-        
-        new_user_id = cursor.lastrowid 
+        new_id = cursor.lastrowid 
 
-        # ÉTAPE 2 : Insertion spécifique (Client, Vendeur, Coursier)
-        # /!\ ATTENTION : On ajoute id_user pour faire le lien
-        extra_fields["id_user"] = new_user_id
-        
-        # SI TA TABLE CLIENT A UNE COLONNE 'id_client' QUI N'EST PAS AUTO-INCREMENT :
-        # Il faut soit la mettre en Auto-Increment dans MySQL, soit ne pas la mentionner ici.
-        
+        # ÉTAPE 2 : Insertion dans la table spécifique (client/vendeur/coursier)
+        # On lie via id_user comme défini dans ton SQL
+        extra_fields["id_user"] = new_id
         columns = ", ".join(extra_fields.keys())
         placeholders = ", ".join(["%s"] * len(extra_fields))
-        values = tuple(extra_fields.values())
-        
-        sql_specific = f"INSERT INTO {role_table} ({columns}) VALUES ({placeholders})"
-        cursor.execute(sql_specific, values)
+        sql_spec = f"INSERT INTO {role_name} ({columns}) VALUES ({placeholders})"
+        cursor.execute(sql_spec, tuple(extra_fields.values()))
 
         conn.commit()
-        return {"status": "success"}
+        return {"status": "success", "id_user": new_id}
 
     except Exception as e:
         if conn: conn.rollback()
-        # --- REGARDE CETTE LIGNE DANS TON TERMINAL PYTHON ---
-        print(f"\n🚨 ERREUR SQL RÉELLE : {str(e)}\n") 
-        # ---------------------------------------------------
+        print(f"🚨 ERREUR SQL : {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn: conn.close()
 
-# --- ROUTES POST ---
+# --- LOGIN : AUTHENTIFICATION ---
+@app.post("/api/login")
+async def login(data: LoginSchema):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # CORRECTION : Tout est dans la table 'users' directement
+        query = "SELECT id_user, role FROM users WHERE email = %s AND password = %s"
+        cursor.execute(query, (data.email, data.password))
+        user = cursor.fetchone()
 
+        if not user:
+            raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
+        
+        return {
+            "status": "success",
+            "role": user['role'],
+            "id_user": user['id_user']
+        }
+    finally:
+        conn.close()
+
+# --- AUTRES ROUTES ---
 @app.post("/api/register-client")
 async def register_client(data: ClientSchema):
     return handle_registration(data, "client", {"type_client": data.type_client})
 
-@app.post("/api/register-vendeur")
-async def register_vendeur(data: VendeurSchema):
-    return handle_registration(data, "vendeur", {
-        "nom_entreprise": data.nom_entreprise, 
-        "adresse_entreprise": data.adresse_entreprise
-    })
+@app.get("/api/admin/accounts")
+def get_all_accounts():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    # CORRECTION : Sélection directe depuis 'users' puisque tu n'as pas séparé les tables
+    query = "SELECT id_user, nom, prenom, email, role, is_active FROM users"
+    cursor.execute(query)
+    res = cursor.fetchall()
+    conn.close()
+    return res
 
-@app.post("/api/register-coursier")
-async def register_coursier(data: CoursierSchema):
-    return handle_registration(data, "coursier", {
-        "vehicule": data.vehicule, 
-        "disponibilite": 1,
-        "latitude_actuelle": data.latitude_actuelle,
-        "longitude_actuelle": data.longitude_actuelle
-    })
+# ============================================================
+#  DASHBOARD VENDEUR — Routes
+# ============================================================
 
-# --- ROUTES GET (COMPATIBLES AVEC TON APP.TS) ---
+# GET  /api/vendeur/{id_vendeur}/colis
+#   Retourne les colis du vendeur avec le nom du client (JOIN)
+@app.get("/api/vendeur/{id_vendeur}/colis")
+def get_vendeur_colis(id_vendeur: int):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        query = """
+            SELECT
+                c.id_colis   AS id,
+                c.description,
+                c.poids,
+                c.statut,
+                c.date_creation,
+                c.id_client,
+                c.id_coursier,
+                CONCAT(u.prenom, ' ', u.nom) AS nomClient
+            FROM colis c
+            LEFT JOIN client cl  ON c.id_client  = cl.id_client
+            LEFT JOIN users  u   ON cl.id_user    = u.id_user
+            WHERE c.id_vendeur = %s
+            ORDER BY c.date_creation DESC
+        """
+        cursor.execute(query, (id_vendeur,))
+        return cursor.fetchall()
+    finally:
+        conn.close()
 
-def get_all_by_role(role: str):
+# POST /api/colis/ajouter
+#   Crée un nouveau colis lié à un vendeur et un client existants
+@app.post("/api/colis/ajouter")
+def ajouter_colis(colis: ColisSchema):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # Vérifier que le client existe
+        cursor.execute("SELECT id_client FROM client WHERE id_client = %s", (colis.id_client,))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="Client introuvable")
+
+        query = """
+            INSERT INTO colis (description, poids, id_vendeur, id_client, statut)
+            VALUES (%s, %s, %s, %s, 'attente')
+        """
+        cursor.execute(query, (colis.description, colis.poids, colis.id_vendeur, colis.id_client))
+        conn.commit()
+        new_id = cursor.lastrowid
+
+        # Retourner le colis créé avec le nom du client
+        cursor.execute("""
+            SELECT c.id_colis AS id, c.description, c.poids, c.statut, c.date_creation,
+                   c.id_client, CONCAT(u.prenom, ' ', u.nom) AS nomClient
+            FROM colis c
+            LEFT JOIN client cl ON c.id_client = cl.id_client
+            LEFT JOIN users  u  ON cl.id_user  = u.id_user
+            WHERE c.id_colis = %s
+        """, (new_id,))
+        return cursor.fetchone()
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+# PUT /api/colis/{id_colis}/annuler
+#   Annule un colis (statut → 'annulé') — uniquement si encore en 'attente'
+@app.put("/api/colis/{id_colis}/annuler")
+def annuler_colis(id_colis: int):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT statut, id_vendeur FROM colis WHERE id_colis = %s", (id_colis,))
+        row = cursor.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Colis introuvable")
+        # Statuts annulables : côté DB l'ENUM est 'attente' et 'ramassé'
+        statuts_annulables = {"attente", "ramassé", "en_route"}
+        if row["statut"] not in statuts_annulables:
+            raise HTTPException(status_code=400, detail=f"Ce colis ne peut plus être annulé (statut actuel : {row['statut']})")
+
+        cursor.execute("UPDATE colis SET statut = 'annulé' WHERE id_colis = %s", (id_colis,))
+        conn.commit()
+        return {"message": "Colis annulé avec succès"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+# PUT /api/colis/{id_colis}/statut
+#   Change le statut d'un colis (depuis le modal Détails du vendeur)
+@app.put("/api/colis/{id_colis}/statut")
+def changer_statut_colis(id_colis: int, data: StatutSchema):
+    # Statuts officiels avec accents
+    statuts_valides = {"attente", "ramassé", "en_route", "livré", "annulé", "en_transit", "en_livraison"}
+    if data.statut not in statuts_valides:
+        raise HTTPException(status_code=400, detail=f"Statut invalide : {data.statut}")
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT id_colis FROM colis WHERE id_colis = %s", (id_colis,))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="Colis introuvable")
+
+        cursor.execute("UPDATE colis SET statut = %s WHERE id_colis = %s", (data.statut, id_colis))
+        conn.commit()
+        return {"message": "Statut mis à jour", "statut": data.statut}
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+# GET /api/colis/{id_colis}
+#   Détails complets d'un colis (pour le bouton Détails)
+@app.get("/api/colis/{id_colis}")
+def get_colis_details(id_colis: int):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT
+                c.id_colis   AS id,
+                c.description,
+                c.poids,
+                c.statut,
+                c.date_creation,
+                c.id_client,
+                c.id_coursier,
+                CONCAT(u.prenom, ' ', u.nom)  AS nomClient,
+                u.telephone                    AS telephoneClient,
+                u.adresse                      AS adresseClient,
+                CONCAT(uc.prenom, ' ', uc.nom) AS nomCoursier
+            FROM colis c
+            LEFT JOIN client  cl  ON c.id_client   = cl.id_client
+            LEFT JOIN users   u   ON cl.id_user     = u.id_user
+            LEFT JOIN coursier cr ON c.id_coursier  = cr.id_coursier
+            LEFT JOIN users   uc  ON cr.id_user     = uc.id_user
+            WHERE c.id_colis = %s
+        """, (id_colis,))
+        row = cursor.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Colis introuvable")
+        return row
+    finally:
+        conn.close()
+
+# ── Clients ────────────────────────────────────────────────
+
+# GET /api/clients
+#   Retourne tous les clients (pour le select du modal "Nouveau Colis")
+@app.get("/api/clients")
+def get_clients():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT
+                cl.id_client  AS id,
+                CONCAT(u.prenom, ' ', u.nom) AS nom,
+                u.email,
+                u.telephone,
+                u.adresse
+            FROM client cl
+            JOIN users u ON cl.id_user = u.id_user
+            ORDER BY u.nom ASC
+        """)
+        return cursor.fetchall()
+    finally:
+        conn.close()
+
+# POST /api/clients/ajouter
+#   Crée un nouvel utilisateur (role=client) + entrée dans la table client
+@app.post("/api/clients/ajouter")
+def ajouter_client(data: ClientSimpleSchema):
+    conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        # Jointure entre 'user' et la table spécifique pour avoir le nom, email, etc.
-        query = f"""
-            SELECT u.*, r.* FROM users u 
-            INNER JOIN {role} r ON u.id_user = r.id_user
-        """
-        cursor.execute(query)
-        results = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return results
+
+        # Vérifier que l'email n'existe pas déjà
+        cursor.execute("SELECT id_user FROM users WHERE email = %s", (data.email,))
+        if cursor.fetchone():
+            raise HTTPException(status_code=409, detail="Un utilisateur avec cet email existe déjà")
+
+        # Insérer dans users
+        cursor.execute("""
+            INSERT INTO users (nom, prenom, email, password, telephone, adresse, role, is_active)
+            VALUES (%s, %s, %s, %s, %s, %s, 'client', 1)
+        """, (
+            data.nom,
+            data.prenom if data.prenom else "",
+            data.email,
+            "changeme",        # mot de passe temporaire
+            data.telephone or "",
+            data.adresse or ""
+        ))
+        new_user_id = cursor.lastrowid
+
+        # Insérer dans client
+        cursor.execute(
+            "INSERT INTO client (type_client, id_user) VALUES ('particulier', %s)",
+            (new_user_id,)
+        )
+        new_client_id = cursor.lastrowid
+
+        conn.commit()
+        return {
+            "id": new_client_id,
+            "nom": f"{data.prenom} {data.nom}".strip(),
+            "email": data.email,
+            "telephone": data.telephone,
+            "adresse": data.adresse
+        }
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"DEBUG GET ERROR: {str(e)}")
-        return []
+        if conn: conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn: conn.close()
 
-@app.get("/client")
-async def get_clients():
-    return get_all_by_role("client")
+# ── Profil vendeur ─────────────────────────────────────────
 
-@app.get("/vendeur")
-async def get_vendeurs():
-    return get_all_by_role("vendeur")
+# GET /api/vendeur/{id_vendeur}/profil
+#   Retourne le profil du vendeur (nom, email, entreprise…)
+@app.get("/api/vendeur/{id_vendeur}/profil")
+def get_vendeur_profil(id_vendeur: int):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT
+                u.id_user, u.nom, u.prenom, u.email, u.telephone, u.adresse,
+                v.nom_entreprise, v.adresse_entreprise
+            FROM vendeur v
+            JOIN users u ON v.id_user = u.id_user
+            WHERE v.id_vendeur = %s
+        """, (id_vendeur,))
+        row = cursor.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Vendeur introuvable")
+        return row
+    finally:
+        conn.close()
 
-@app.get("/coursier")
-async def get_coursiers():
-    return get_all_by_role("coursier")
+# PUT /api/vendeur/{id_vendeur}/profil
+#   Met à jour le nom et l'email du vendeur
+@app.put("/api/vendeur/{id_vendeur}/profil")
+def update_vendeur_profil(id_vendeur: int, data: ProfilVendeurSchema):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # Récupérer l'id_user du vendeur
+        cursor.execute("SELECT id_user FROM vendeur WHERE id_vendeur = %s", (id_vendeur,))
+        row = cursor.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Vendeur introuvable")
+
+        # Vérifier unicité email si changé
+        cursor.execute(
+            "SELECT id_user FROM users WHERE email = %s AND id_user != %s",
+            (data.email, row["id_user"])
+        )
+        if cursor.fetchone():
+            raise HTTPException(status_code=409, detail="Cet email est déjà utilisé")
+
+        cursor.execute(
+            "UPDATE users SET nom = %s, email = %s WHERE id_user = %s",
+            (data.nom, data.email, row["id_user"])
+        )
+        conn.commit()
+        return {"message": "Profil mis à jour avec succès"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()

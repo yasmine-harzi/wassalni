@@ -1,1 +1,24 @@
-<p>login works!</p>
+<div class="login-container">
+  <div class="login-card">
+    <h2>Se connecter</h2>
+    <p>Heureux de vous revoir sur Wassalni !</p>
+
+    <form (submit)="$event.preventDefault()">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="credentials.email" name="email" placeholder="Entrez votre email">
+      </div>
+
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" [(ngModel)]="credentials.password" name="password" placeholder="Entrez votre mot de passe">
+      </div>
+
+      <button type="button" class="btn-login" (click)="onLogin()">Se connecter</button>
+    </form>
+
+    <div class="login-footer">
+      Pas encore de compte ? <a routerLink="/register-client">Créer un compte</a>
+    </div>
+  </div>
+</div>
