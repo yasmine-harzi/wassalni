@@ -1,149 +1,298 @@
-/* --- Dashboard Colis - Raycast Style --- */
+/* ═══════════════════════════════════════════════
+   MES COLIS — HERO PACKAGE THEME
+═══════════════════════════════════════════════ */
 
-/* Conteneur principal plus aéré */
-.page-section { 
-    max-width: 1000px; 
-    padding: 20px;
-    animation: fadeIn 0.5s ease-out;
+:host {
+  --dark-mauve: #4A3B4D;
+  --dark-mauve-2: #5f4d63;
+  --light-mauve: #F3E8F5;
+  --metallic-silver: #E2E2E7;
+  --border-color: rgba(74,59,77,0.12);
+  --text-dark: #2f2732;
+  --text-muted: #6b7280;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
 }
 
-/* Titre moderne et sobre */
-.section-title { 
-    font-size: 24px; 
-    font-weight: 800; 
-    color: #1a1a1a; /* Presque noir pour le contraste */
-    letter-spacing: -0.5px;
-    margin-bottom: 30px; 
+/* ── PAGE SECTION ───────────────────────────── */
+.page-section {
+  animation: fadeSlide .4s ease;
 }
 
-/* Filtres en mode "Pilules" élégantes */
-.filtres { 
-    display: flex; 
-    gap: 12px; 
-    margin-bottom: 32px; 
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--dark-mauve);
+  margin-bottom: 24px;
+  letter-spacing: -0.03em;
+}
+
+/* ── FILTRES ────────────────────────────────── */
+.filtres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
 }
 
 .filtres button {
-    padding: 8px 20px; 
-    border-radius: 100px; 
-    border: 1px solid rgba(0,0,0,0.08);
-    background: #f4f4f7; 
-    cursor: pointer; 
-    font-size: 14px; 
-    font-weight: 500;
-    color: #666;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: rgba(255,255,255,.72);
+  backdrop-filter: blur(10px);
+  color: var(--text-dark);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .25s ease;
 }
 
-/* Ton Mauve Signature #4A3B4D pour l'actif */
-.filtres button.actif { 
-    background: #4A3B4D; 
-    color: #ffffff; 
-    border-color: #4A3B4D; 
-    box-shadow: 0 4px 12px rgba(74, 59, 77, 0.2);
+.filtres button:hover {
+  transform: translateY(-2px);
+  background: rgba(243,232,245,.85);
 }
 
-.filtres button:hover:not(.actif) {
-    background: #e2e2e7;
-    border-color: #d1d1d6;
+.filtres button.actif {
+  background: linear-gradient(135deg, var(--dark-mauve), var(--dark-mauve-2));
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 8px 18px rgba(74,59,77,.18);
 }
 
-/* Grille de colis */
-.colis-grid { 
-    display: grid; 
-    gap: 20px; 
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+/* ── LOADING / EMPTY ────────────────────────── */
+.loading-card,
+.empty-card {
+  background: rgba(255,255,255,.76);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 36px;
+  text-align: center;
+  color: var(--text-muted);
+  box-shadow: 0 8px 20px rgba(74,59,77,.05);
 }
 
-/* Carte Colis style "Glass" */
-.colis-card { 
-    background: #ffffff; 
-    border-radius: 16px; 
-    padding: 24px; 
-    border: 1px solid rgba(0,0,0,0.04);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.loading-card {
+  font-weight: 700;
+  color: var(--dark-mauve);
+}
+
+.empty-card span {
+  display: block;
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.empty-card p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ── GRID ───────────────────────────────────── */
+.colis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 22px;
+}
+
+/* ── CARD ───────────────────────────────────── */
+.colis-card {
+  background: rgba(255,255,255,.78);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow:
+    0 10px 28px rgba(74,59,77,.06),
+    inset 0 1px 0 rgba(255,255,255,.6);
+  transition: all .28s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .colis-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+  transform: translateY(-6px);
+  box-shadow:
+    0 18px 36px rgba(74,59,77,.12),
+    inset 0 1px 0 rgba(255,255,255,.7);
 }
 
-.colis-header { 
-    margin-bottom: 16px; 
+/* ── HEADER ─────────────────────────────────── */
+.colis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
-.colis-id { 
-    font-weight: 800; 
-    color: #4A3B4D; 
-    font-size: 16px; 
-    letter-spacing: 0.5px;
+.colis-id {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--dark-mauve);
 }
 
-/* Corps du texte plus lisible */
-.colis-body p { 
-    margin: 6px 0; 
-    font-size: 14px; 
-    color: #555; 
-    display: flex;
-    align-items: center;
-    gap: 8px;
+/* ── BADGES ─────────────────────────────────── */
+.badge {
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
 }
 
-/* Badges retravaillés (Soft Colors) */
-.badge { 
-    padding: 5px 12px; 
-    border-radius: 8px; 
-    font-size: 11px; 
-    font-weight: 700; 
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+/* Classes expected from badgeClass() */
+.badge.ramassé,
+.badge.ramasse {
+  background: rgba(59,130,246,.12);
+  color: var(--info);
 }
 
-.badge-attente { background: #fff7ed; color: #c2410c; } /* Orange soft */
-.badge-ramasse { background: #f0f9ff; color: #0369a1; } /* Bleu soft */
-.badge-route { background: #f5f3ff; color: #6d28d9; }   /* Violet soft */
-.badge-livre { background: #f0fdf4; color: #15803d; }   /* Vert soft */
-.badge-annule { background: #fef2f2; color: #b91c1c; }  /* Rouge soft */
-
-/* Actions Boutons Premium */
-.colis-actions { 
-    margin-top: 20px; 
-    padding-top: 16px;
-    border-top: 1px solid #f0f0f3;
+.badge.en_route {
+  background: rgba(245,158,11,.12);
+  color: var(--warning);
 }
 
+.badge.livré,
+.badge.livre {
+  background: rgba(34,197,94,.12);
+  color: var(--success);
+}
+
+.badge.annulé,
+.badge.annule {
+  background: rgba(239,68,68,.12);
+  color: var(--danger);
+}
+
+/* ── BODY ───────────────────────────────────── */
+.colis-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--text-dark);
+  margin-bottom: 22px;
+}
+
+.colis-body p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.colis-body strong {
+  color: var(--dark-mauve);
+  font-weight: 700;
+}
+
+/* ── ACTIONS ────────────────────────────────── */
+.colis-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+}
+
+/* Main action */
 .btn-action {
-    background: #4A3B4D; 
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: opacity 0.2s;
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--dark-mauve), var(--dark-mauve-2));
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .25s ease;
+  box-shadow: 0 8px 18px rgba(74,59,77,.18);
 }
 
 .btn-action:hover {
-    background: #3a2e3d;
-    opacity: 0.9;
+  transform: translateY(-2px);
 }
 
-.btn-outline { 
-    border: 1.5px solid #e2e2e7; 
-    color: #4A3B4D; 
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: all 0.2s;
+/* Danger */
+.btn-danger {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 14px;
+  background: rgba(239,68,68,.12);
+  color: var(--danger);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .25s ease;
+}
+
+.btn-danger:hover {
+  background: rgba(239,68,68,.18);
+}
+
+/* Outline */
+.btn-outline {
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: rgba(255,255,255,.72);
+  color: var(--dark-mauve);
+  text-decoration: none;
+  font-weight: 700;
+  transition: all .25s ease;
 }
 
 .btn-outline:hover {
-    background: #f4f4f7;
-    border-color: #4A3B4D;
+  background: rgba(243,232,245,.75);
+  transform: translateY(-2px);
 }
 
-/* Animation d'entrée */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* ── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 900px) {
+  .colis-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .section-title {
+    font-size: 24px;
+  }
+
+  .filtres {
+    gap: 8px;
+  }
+
+  .filtres button {
+    flex: 1 1 calc(50% - 8px);
+    text-align: center;
+  }
+
+  .colis-card {
+    padding: 18px;
+  }
+
+  .colis-actions {
+    flex-direction: column;
+  }
+
+  .btn-action,
+  .btn-danger,
+  .btn-outline {
+    width: 100%;
+    text-align: center;
+  }
 }
