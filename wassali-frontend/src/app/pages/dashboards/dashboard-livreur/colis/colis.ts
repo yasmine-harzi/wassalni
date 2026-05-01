@@ -18,7 +18,7 @@ export class ColisComponent implements OnInit {
 
   readonly statuts = ['attente', 'ramassé', 'en_route', 'livré', 'annulé'];
 
-  constructor(private svc: ColisService) {}
+  constructor(private svc: ColisService) { }
 
   ngOnInit() {
     this.svc.getMesColis(getLoggedId()).subscribe({
@@ -29,8 +29,7 @@ export class ColisComponent implements OnInit {
 
   get colisFiltres() {
     if (this.filtre === 'Tous' || this.filtre === 'tous') return this.colis;
-    
-    // Map les labels UI vers les statuts DB
+
     const map: Record<string, string> = {
       'Ramassé': 'ramassé',
       'En route': 'en_route',
@@ -43,9 +42,14 @@ export class ColisComponent implements OnInit {
 
   updateStatut(id: number, statut: string) {
     this.svc.updateStatut(id, statut).subscribe({
-      next: () => {
-        const c = this.colis.find(x => x.id_colis === id);
-        if (c) c.statut = statut;
+      next: (res: any) => {
+        if (statut === 'annulé') {
+          // Si annulé, il n'est plus à nous, on le retire de la liste
+          this.colis = this.colis.filter(x => x.id_colis !== id);
+        } else {
+          const c = this.colis.find(x => x.id_colis === id);
+          if (c) c.statut = res.statut || statut;
+        }
       }
     });
   }

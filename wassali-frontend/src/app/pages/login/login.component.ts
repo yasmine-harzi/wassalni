@@ -12,10 +12,10 @@ import { AuthService } from '../../services/auth';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  email    = '';
+  email = '';
   password = '';
-  loading  = signal(false);
-  error    = signal('');
+  loading = signal(false);
+  error = signal('');
 
   constructor(private auth: AuthService, private router: Router) {
     if (this.auth.isLoggedIn()) this.router.navigate(['/dashboard-livreur']);
@@ -23,8 +23,11 @@ export class LoginComponent {
 
   onSubmit() {
     if (!this.email || !this.password) {
-      this.error.set('Veuillez remplir tous les champs');
+      this.error.set('Veuillez remplir tout les champs');
       return;
+
+
+
     }
     this.loading.set(true);
     this.error.set('');

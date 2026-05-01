@@ -6,31 +6,29 @@ import { Observable, tap } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  // L'adresse de ton serveur Python (celui que tu viens d'installer)
   private apiUrl = 'http://127.0.0.1:8000/api'; 
 
   constructor(private http: HttpClient) { }
 
-  // La fonction pour envoyer les données du nouveau client
   registerClient(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register-client`, userData);
   }
-  // 2. Inscription Vendeur
+  // Vendeur
   registerVendeur(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register-vendeur`, userData);
   }
 
-  // 3. Inscription Coursier / Livreur
+  //Coursier / Livreur
   registerCoursier(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register-coursier`, userData);
   }
 
-  // 4. Connexion (Login commun à tous)
+  // Login
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((res: any) => {
         if (res.status === 'success') {
-          localStorage.setItem('token', 'fake-jwt-token'); // On met un faux token pour isLoggedIn()
+          localStorage.setItem('token', 'fake-jwt-token'); 
           localStorage.setItem('user', JSON.stringify(res));
         }
       })
