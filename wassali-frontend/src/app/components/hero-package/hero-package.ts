@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-hero-package',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './hero-package.html',
   styleUrl: './hero-package.css',
 })
@@ -30,4 +31,5 @@ export class HeroPackageComponent {
       });
     }
   }
+  
 }

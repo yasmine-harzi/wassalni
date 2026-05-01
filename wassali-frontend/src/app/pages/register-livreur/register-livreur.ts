@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth'; 
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router,RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register-livreur',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule,CommonModule,RouterLink],
   templateUrl: './register-livreur.html',
   styleUrl: './register-livreur.css'
 })
@@ -46,17 +47,27 @@ export class RegisterLivreur {
   longitude_actuelle: new FormControl(0)
 });
 
-  constructor(private monOutilAuth: AuthService) {}
-
+  constructor(
+  private monOutilAuth: AuthService, 
+  private router: Router // 2. Inject the Router here
+) {}
   onSubmit() {
-    if (this.coursierForm.valid) {
-      // On appelle la fonction RegisterLivreur du service
-      this.monOutilAuth.RegisterLivreur(this.coursierForm.value).subscribe({
-        next: (reponse) => {
-          console.log('Coursier enregistré !', reponse);
-          alert('Compte coursier activé !');
-        },
-        error: (err) => console.error('Erreur Coursier:', err)
+  if (this.coursierForm.valid) {
+    this.monOutilAuth.RegisterLivreur(this.coursierForm.value).subscribe({
+      next: (reponse) => {
+        console.log('Coursier registered in DB!', reponse);
+        
+        // 1. Alert the user they succeeded
+        alert('Inscription réussie ! Connectez-vous pour accéder à votre espace.');
+        
+        // 2. Redirect to the COMMON login page
+        // NO localStorage here! We want them to type their credentials.
+        this.router.navigate(['/login']); 
+      },
+      error: (err) => {
+        console.error('Erreur Inscription Coursier:', err);
+        alert("Erreur lors de l'inscription.");
+        }
       });
     }
   }

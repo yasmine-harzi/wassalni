@@ -1,0 +1,131 @@
+/* --- Notifications - Modern Feed Style --- */
+
+.page-section { 
+    max-width: 800px; 
+    margin: 0 auto;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.section-title { 
+    font-size: 22px; 
+    font-weight: 800; 
+    color: #1a1a1a; 
+    letter-spacing: -0.5px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Conteneur de liste style "Feed" */
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* La carte notification version épurée */
+.notif-card { 
+    background: #ffffff; 
+    border-radius: 14px; 
+    padding: 18px 24px; 
+    border: 1px solid rgba(0,0,0,0.04);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.notif-card:hover {
+    background: #fcfcfd;
+    transform: translateX(4px);
+    border-color: #E2E2E7;
+}
+
+/* Indicateur "Non-lu" - Ton Mauve en point d'accent */
+.notif-card.unread {
+    background: linear-gradient(90deg, #ffffff 0%, #f9f8f9 100%);
+    border-left: 4px solid #4A3B4D;
+}
+
+.notif-card.unread::after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: #4A3B4D;
+    border-radius: 50%;
+}
+
+/* Icône ou Avatar de notification */
+.notif-icon {
+    width: 42px;
+    height: 42px;
+    background: #f4f4f7;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4A3B4D;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+/* Contenu textuel */
+.notif-content {
+    flex-grow: 1;
+}
+
+.notif-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.notif-body {
+    font-size: 13.5px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.notif-time {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* État vide élégant */
+.empty-card {
+    background: #ffffff;
+    border: 2px dashed #E2E2E7;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+}
+
+.empty-card span {
+    font-size: 48px;
+    filter: grayscale(1);
+    opacity: 0.3;
+    margin-bottom: 15px;
+}
+
+.empty-card p {
+    color: #4A3B4D;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Animation d'apparition */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}

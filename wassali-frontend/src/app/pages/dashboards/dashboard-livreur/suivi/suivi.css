@@ -1,0 +1,133 @@
+/* --- Suivi & Tracking - Premium Timeline Style --- */
+@import '../colis/colis.css';
+
+.page-section {
+    max-width: 850px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* ── CARTE DE SAISIE DE POSITION ── */
+.position-card { 
+    background: #ffffff; 
+    border-radius: 20px; 
+    padding: 30px; 
+    margin-bottom: 32px; 
+    border: 1px solid rgba(74, 59, 77, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.position-card h3 { 
+    font-size: 18px; 
+    font-weight: 800; 
+    color: #4A3B4D; /* Ton Mauve */
+    margin-bottom: 24px; 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-row { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; 
+    margin-bottom: 20px; 
+}
+
+.form-group label { 
+    display: block; 
+    font-size: 12px; 
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9ca3af; 
+    margin-bottom: 8px; 
+    font-weight: 700;
+}
+
+.form-group input { 
+    width: 100%; 
+    padding: 12px 16px; 
+    background: #fdfdff;
+    border: 1.5px solid #E2E2E7; 
+    border-radius: 12px; 
+    font-size: 14px; 
+    color: #1a1a1a;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #4A3B4D;
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(74, 59, 77, 0.1);
+}
+
+.hint { 
+    font-size: 12px; 
+    color: #9ca3af; 
+    font-style: italic;
+    margin-top: 10px; 
+}
+
+/* ── TIMELINE DES POSITIONS ── */
+.positions-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0; /* On colle pour créer la ligne continue */
+    padding-left: 20px;
+    border-left: 2px solid #E2E2E7; /* La ligne de la timeline */
+    margin-left: 10px;
+}
+
+.position-row { 
+    background: transparent; 
+    border-radius: 0; 
+    padding: 20px 0 20px 30px; 
+    display: flex; 
+    gap: 16px; 
+    align-items: flex-start; 
+    box-shadow: none;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Le point sur la ligne */
+.position-row::before {
+    content: '';
+    position: absolute;
+    left: -7px; /* Aligné sur la bordure de .positions-list */
+    top: 26px;
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border: 3px solid #4A3B4D;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.position-row:first-child::before {
+    background: #4A3B4D; /* Le point le plus récent est plein */
+    box-shadow: 0 0 0 5px rgba(74, 59, 77, 0.15);
+}
+
+.pos-coords { 
+    font-size: 15px; 
+    font-weight: 700; 
+    color: #1a1a1a; 
+    margin: 0; 
+}
+
+.pos-date { 
+    font-size: 12px; 
+    color: #9ca3af; 
+    margin: 4px 0 0; 
+    font-weight: 500;
+}
+
+/* Effet au survol d'une étape */
+.position-row:hover {
+    transform: translateX(10px);
+}
+
+.position-row:hover .pos-coords {
+    color: #4A3B4D;
+}

@@ -118,6 +118,7 @@
   /* Metallic Gradient Text */
   background: linear-gradient(to bottom, #000 60%, var(--dark-mauve));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -182,3 +183,4 @@
 }
 .left { left: 5%; }
 .right { right: 5%; }
+

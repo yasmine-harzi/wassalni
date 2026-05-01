@@ -1,0 +1,40 @@
+<div class="page-section">
+  <h2 class="section-title">📍 Suivi GPS — Colis #{{ idColis }}</h2>
+
+  <div class="alert-success" *ngIf="message">{{ message }}</div>
+
+  <!-- Formulaire position -->
+  <div class="position-card">
+    <h3>Enregistrer ma position</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Latitude</label>
+        <input type="number" [(ngModel)]="lat" placeholder="ex: 36.8190" step="0.000001">
+      </div>
+      <div class="form-group">
+        <label>Longitude</label>
+        <input type="number" [(ngModel)]="lon" placeholder="ex: 10.1660" step="0.000001">
+      </div>
+    </div>
+    <button class="btn-action" (click)="enregistrer()" [disabled]="saving || !lat || !lon">
+      {{ saving ? 'Enregistrement...' : '📍 Enregistrer position' }}
+    </button>
+    <p class="hint">La géolocalisation automatique a été tentée. Vous pouvez corriger manuellement.</p>
+  </div>
+
+  <!-- Historique -->
+  <h3 style="margin: 24px 0 12px; font-size: 15px; color: #374151;">Historique des positions</h3>
+  <div *ngIf="loading" class="loading-card">Chargement...</div>
+  <div *ngIf="!loading && positions.length === 0" class="empty-card">
+    <span>🗺️</span><p>Aucune position enregistrée</p>
+  </div>
+  <div class="positions-list" *ngIf="!loading">
+    <div class="position-row" *ngFor="let p of positions">
+      <span class="pos-dot">●</span>
+      <div>
+        <p class="pos-coords">Lat: {{ p.latitude }} | Lon: {{ p.longitude }}</p>
+        <p class="pos-date">{{ p.date_position | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

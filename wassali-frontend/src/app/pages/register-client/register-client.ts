@@ -3,11 +3,12 @@ import { AuthService } from '../../services/auth';
 // Ajout de Validators ici
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Important pour les *ngIf dans le HTML
+import { Router,RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register-client',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule], // Ajoute CommonModule
+  imports: [ReactiveFormsModule, CommonModule,RouterLink ], // Ajoute CommonModule pour les directives Angular
   templateUrl: './register-client.html',
   styleUrl: './register-client.css'
 })
@@ -39,8 +40,12 @@ export class RegisterClient {
     adresse: new FormControl('', Validators.required),
     type_client: new FormControl('particulier')
   });
-
-  constructor(private monOutilAuth: AuthService) {}
+  
+  constructor(
+  private monOutilAuth: AuthService, 
+  private router: Router // 2. Inject the Router here
+) {}
+  
 
   onSubmit() {
     if (this.registerForm.valid) {
@@ -48,6 +53,7 @@ export class RegisterClient {
         next: (reponse) => {
           console.log('Réussi !', reponse);
           alert('Client enregistré avec succès !');
+          this.router.navigate(['/login']); // Redirige vers la page de connexion après l'inscription
         },
         error: (err) => {
           console.error('Erreur !', err);

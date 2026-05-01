@@ -1,7 +1,36 @@
-<app-hero-package></app-hero-package>
+<nav class="raycast-navbar">
+  <div class="nav-pill">
+    <div class="nav-left" (click)="scrollToSection('hero')">
+      <div class="mini-logo">W</div>
+    </div>
 
-<app-scroll-package-story></app-scroll-package-story>
+    <div class="nav-center">
+      <a class="nav-link" (click)="scrollToSection('story')">Concept</a>
+      <a class="nav-link" (click)="scrollToSection('roles')">Services</a>
+      <a class="nav-link" (click)="scrollToSection('team')">L'Équipe</a>
+    </div>
 
-<app-role-selector></app-role-selector>
+    <div class="nav-right">
+      <button class="login-action" routerLink="/login">Se connecter</button>
+    </div>
+  </div>
+</nav>
+<main>
+  <div id="hero">
+    <app-hero-package></app-hero-package>
+  </div>
 
-<app-team-carousel></app-team-carousel>
+  <div id="story">
+    <app-scroll-package-story></app-scroll-package-story>
+  </div>
+
+  <div id="roles">
+    <app-role-selector></app-role-selector>
+  </div>
+
+  <div id="team">
+    <app-team-carousel></app-team-carousel>
+  </div>
+</main>
+
+

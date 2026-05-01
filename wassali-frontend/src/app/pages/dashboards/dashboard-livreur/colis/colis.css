@@ -1,0 +1,149 @@
+/* --- Dashboard Colis - Raycast Style --- */
+
+/* Conteneur principal plus aéré */
+.page-section { 
+    max-width: 1000px; 
+    padding: 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Titre moderne et sobre */
+.section-title { 
+    font-size: 24px; 
+    font-weight: 800; 
+    color: #1a1a1a; /* Presque noir pour le contraste */
+    letter-spacing: -0.5px;
+    margin-bottom: 30px; 
+}
+
+/* Filtres en mode "Pilules" élégantes */
+.filtres { 
+    display: flex; 
+    gap: 12px; 
+    margin-bottom: 32px; 
+}
+
+.filtres button {
+    padding: 8px 20px; 
+    border-radius: 100px; 
+    border: 1px solid rgba(0,0,0,0.08);
+    background: #f4f4f7; 
+    cursor: pointer; 
+    font-size: 14px; 
+    font-weight: 500;
+    color: #666;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ton Mauve Signature #4A3B4D pour l'actif */
+.filtres button.actif { 
+    background: #4A3B4D; 
+    color: #ffffff; 
+    border-color: #4A3B4D; 
+    box-shadow: 0 4px 12px rgba(74, 59, 77, 0.2);
+}
+
+.filtres button:hover:not(.actif) {
+    background: #e2e2e7;
+    border-color: #d1d1d6;
+}
+
+/* Grille de colis */
+.colis-grid { 
+    display: grid; 
+    gap: 20px; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+}
+
+/* Carte Colis style "Glass" */
+.colis-card { 
+    background: #ffffff; 
+    border-radius: 16px; 
+    padding: 24px; 
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.colis-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+}
+
+.colis-header { 
+    margin-bottom: 16px; 
+}
+
+.colis-id { 
+    font-weight: 800; 
+    color: #4A3B4D; 
+    font-size: 16px; 
+    letter-spacing: 0.5px;
+}
+
+/* Corps du texte plus lisible */
+.colis-body p { 
+    margin: 6px 0; 
+    font-size: 14px; 
+    color: #555; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Badges retravaillés (Soft Colors) */
+.badge { 
+    padding: 5px 12px; 
+    border-radius: 8px; 
+    font-size: 11px; 
+    font-weight: 700; 
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.badge-attente { background: #fff7ed; color: #c2410c; } /* Orange soft */
+.badge-ramasse { background: #f0f9ff; color: #0369a1; } /* Bleu soft */
+.badge-route { background: #f5f3ff; color: #6d28d9; }   /* Violet soft */
+.badge-livre { background: #f0fdf4; color: #15803d; }   /* Vert soft */
+.badge-annule { background: #fef2f2; color: #b91c1c; }  /* Rouge soft */
+
+/* Actions Boutons Premium */
+.colis-actions { 
+    margin-top: 20px; 
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f3;
+}
+
+.btn-action {
+    background: #4A3B4D; 
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn-action:hover {
+    background: #3a2e3d;
+    opacity: 0.9;
+}
+
+.btn-outline { 
+    border: 1.5px solid #e2e2e7; 
+    color: #4A3B4D; 
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    background: #f4f4f7;
+    border-color: #4A3B4D;
+}
+
+/* Animation d'entrée */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

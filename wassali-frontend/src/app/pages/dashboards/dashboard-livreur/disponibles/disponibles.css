@@ -1,0 +1,98 @@
+/* --- Disponibles - High Efficiency Style --- */
+@import '../colis/colis.css';
+
+/* Header de section avec alignement pro */
+.section-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 28px; 
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+.section-header .section-title { 
+    margin-bottom: 0; 
+    background: linear-gradient(90deg, #4A3B4D, #7a6a7d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Bouton Refresh Style "Silver" */
+.btn-refresh { 
+    padding: 10px 18px; 
+    background: #E2E2E7; 
+    border: 1px solid #d1d1d6; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    font-size: 13px; 
+    font-weight: 600;
+    color: #4A3B4D;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-refresh:hover {
+    background: #d1d1d6;
+    transform: rotate(15deg); /* Petit effet ludique au hover */
+}
+
+/* Accentuation de la carte disponible */
+.colis-card.available { 
+    border-left: 5px solid #4A3B4D; /* Utilisation de ton Mauve */
+    background: linear-gradient(to right, #ffffff, #fafafa);
+}
+
+/* Bouton Accepter "Call to Action" */
+.btn-accept { 
+    width: 100%; 
+    padding: 12px; 
+    background: #4A3B4D; 
+    color: #ffffff; 
+    border: none; 
+    border-radius: 12px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    font-size: 14px;
+    margin-top: 16px; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(74, 59, 77, 0.25);
+    transition: all 0.3s ease;
+}
+
+.btn-accept:not(:disabled):hover {
+    background: #3a2e3d;
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(74, 59, 77, 0.35);
+}
+
+.btn-accept:disabled { 
+    background: #bdc3c7;
+    box-shadow: none;
+    opacity: .6; 
+    cursor: not-allowed; 
+}
+
+/* Alerte succès élégante */
+.alert-success { 
+    background: #f0fdf4; 
+    color: #15803d; 
+    padding: 14px 20px; 
+    border-radius: 12px; 
+    border: 1px solid #dcfce7;
+    margin-bottom: 24px; 
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,156 @@
+/* --- Profil - Executive Dashboard Style --- */
+
+.page-section {
+  max-width: 1000px;
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── HEADER PREMIUM ── */
+.profil-header {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+}
+
+.profil-avatar {
+  width: 110px;
+  height: 110px;
+  /* Dégradé utilisant ton Mauve Signature #4A3B4D */
+  background: linear-gradient(135deg, #4A3B4D 0%, #2D242F 100%);
+  color: #E2E2E7; /* Ton Silver */
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 800;
+  box-shadow: 0 15px 30px rgba(74, 59, 77, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.profil-title h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+  letter-spacing: -1px;
+}
+
+.role-tag {
+  background: #4A3B4D;
+  color: #E2E2E7;
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── CARDS & GRID ── */
+.profil-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 30px;
+}
+
+.profil-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(74, 59, 77, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.profil-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  border-bottom: 1px solid #f4f4f7;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+}
+
+.card-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #4A3B4D;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── INFO LIST ── */
+.info-list {
+  gap: 22px;
+}
+
+.info-group label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #9ca3af;
+  margin-bottom: 8px;
+}
+
+.info-group .value {
+  font-size: 16px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.info-group .value.highlight {
+  color: #4A3B4D;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+/* ── DISPO CONTROL (L'interrupteur) ── */
+.dispo-control {
+  background: #fdfdff;
+  border: 1px solid #E2E2E7;
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.dispo-info p {
+  font-size: 15px;
+  letter-spacing: -0.2px;
+}
+
+.online { color: #10b981; } /* Vert émeraude */
+.offline { color: #ef4444; }
+
+/* ── TOGGLE SWITCH PREMIUM ── */
+.toggle-switch {
+  width: 60px;
+  height: 32px;
+  background: #E2E2E7;
+}
+
+.toggle-switch.active {
+  background: #4A3B4D; /* Ton Mauve */
+}
+
+.switch-ball {
+  width: 26px;
+  height: 26px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* ── LOADING ── */
+.spinner-small {
+  border-top: 3px solid #4A3B4D;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

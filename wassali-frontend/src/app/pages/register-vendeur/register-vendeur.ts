@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth'; 
+import { AuthService } from '../../services/auth';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 @Component({
   selector: 'app-register-vendeur',
   standalone: true,
-  imports: [ReactiveFormsModule,ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule,CommonModule,RouterLink],
   templateUrl: './register-vendeur.html',
   styleUrl: './register-vendeur.css'
 })
@@ -38,17 +39,21 @@ export class RegisterVendeur {
     adresse_entreprise: new FormControl('', Validators.required) // Correspond à ta DB
   });
 
-  constructor(private monOutilAuth: AuthService) {}
+  constructor(
+  private monOutilAuth: AuthService, 
+  private router: Router // 2. Inject the Router here
+) {}
 
   onSubmit() {
     if (this.vendeurForm.valid) {
       // On appelle la fonction registerVendeur du service
       this.monOutilAuth.registerVendeur(this.vendeurForm.value).subscribe({
-        next: (reponse) => {
+        next: (reponse: any) => {
           console.log('Vendeur enregistré !', reponse);
           alert('Boutique créée avec succès !');
+          this.router.navigate(['/login']); 
         },
-        error: (err) => console.error('Erreur Vendeur:', err)
+        error: (err: any) => console.error('Erreur Vendeur:', err)
       });
     }
   }

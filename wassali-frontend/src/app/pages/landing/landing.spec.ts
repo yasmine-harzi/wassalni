@@ -20,4 +20,5 @@ describe('Landing', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  
 });
