@@ -7,6 +7,7 @@ import { RegisterClient } from './pages/register-client/register-client';
 import { RegisterLivreur } from './pages/register-livreur/register-livreur';
 import { RegisterVendeur } from './pages/register-vendeur/register-vendeur';
 
+
 export const routes: Routes = [
   { path: '', component: LandingComponent }, 
   { path: 'home-old', component: Home }, // Page d'accueil (vide)
