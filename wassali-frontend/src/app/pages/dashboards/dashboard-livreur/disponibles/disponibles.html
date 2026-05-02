@@ -1,0 +1,35 @@
+<div class="page-section">
+  <div class="section-header">
+    <h2 class="section-title">🔍 Colis disponibles</h2>
+    <button class="btn-refresh" (click)="load()">↻ Actualiser</button>
+  </div>
+
+  <div class="alert-success" *ngIf="message">{{ message }}</div>
+  <div *ngIf="loading" class="loading-card">Chargement...</div>
+
+  <div *ngIf="!loading && colis.length === 0" class="empty-card">
+    <span>🎉</span>
+    <p>Aucun colis disponible pour le moment</p>
+  </div>
+
+  <div class="colis-grid" *ngIf="!loading">
+    <div class="colis-card available" *ngFor="let c of colis">
+      <div class="colis-header">
+        <span class="colis-id">#{{ c.id_colis }}</span>
+        <span class="badge badge-attente">À prendre</span>
+      </div>
+      <div class="colis-body">
+        <p *ngIf="c.description"><strong>Description:</strong> {{ c.description }}</p>
+        <p *ngIf="c.poids"><strong>Poids:</strong> {{ c.poids }} kg</p>
+        <p *ngIf="c.client_nom"><strong>Client:</strong> {{ c.client_nom }}</p>
+        <p *ngIf="c.client_adresse"><strong>Adresse:</strong> {{ c.client_adresse }}</p>
+        <p><strong>Créé le:</strong> {{ c.date_creation | date:'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <button class="btn-accept"
+              [disabled]="accepting === c.id_colis"
+              (click)="accepter(c.id_colis)">
+        {{ accepting === c.id_colis ? 'En cours...' : '✓ Accepter ce colis' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="register-container">
+  <h2>Inscription Vendeur (Boutique)</h2>
+  
+  <form [formGroup]="vendeurForm" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nom</label>
+        <input type="text" formControlName="nom" placeholder="Votre nom">
+        <div class="feedback-text">
+          <span *ngIf="vendeurForm.get('nom')?.touched && vendeurForm.get('nom')?.invalid">Nom requis</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Prénom</label>
+        <input type="text" formControlName="prenom" placeholder="Votre prénom">
+        <div class="feedback-text">
+          <span *ngIf="vendeurForm.get('prenom')?.touched && vendeurForm.get('prenom')?.invalid">Prénom requis</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="exemple@gmail.com">
+      <div class="feedback-text">
+        <span *ngIf="vendeurForm.get('email')?.touched && vendeurForm.get('email')?.hasError('required')">L'email est obligatoire.</span>
+        <span *ngIf="vendeurForm.get('email')?.dirty && vendeurForm.get('email')?.hasError('pattern')">L'adresse doit être un @gmail.com valide.</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" formControlName="password" placeholder="********">
+      <div class="feedback-text">
+        <span *ngIf="vendeurForm.get('password')?.touched && vendeurForm.get('password')?.hasError('required')">Mot de passe requis.</span>
+        <span *ngIf="vendeurForm.get('password')?.dirty && (vendeurForm.get('password')?.invalid && !vendeurForm.get('password')?.hasError('required'))">
+          8+ car. (1 Maj, 1 Chiffre, 1 Symbole)
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Téléphone</label>
+      <input type="text" formControlName="telephone" placeholder="Ex: 21654321">
+      <div class="feedback-text">
+        <span *ngIf="vendeurForm.get('telephone')?.touched && vendeurForm.get('telephone')?.hasError('required')">Numéro requis.</span>
+        <span *ngIf="vendeurForm.get('telephone')?.dirty && vendeurForm.get('telephone')?.hasError('pattern')">Doit contenir 8 chiffres.</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Adresse</label>
+      <input type="text" formControlName="adresse" placeholder="Adresse complète">
+      <div class="feedback-text">
+        <span *ngIf="vendeurForm.get('adresse')?.touched && vendeurForm.get('adresse')?.invalid">L'adresse de livraison est requise.</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Nom de la Boutique</label>
+      <input type="text" formControlName="nom_entreprise" placeholder="Ex: La Maison du Café">
+      <div class="feedback-text">
+        <span *ngIf="vendeurForm.get('nom_entreprise')?.touched && vendeurForm.get('nom_entreprise')?.invalid">Le nom de la boutique est requis.</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Adresse de la Boutique</label>
+      <input type="text" formControlName="adresse_entreprise" placeholder="Ex: 123 Rue de Tunis, Ariana...">
+      <div class="feedback-text">
+        <span *ngIf="vendeurForm.get('adresse_entreprise')?.touched && vendeurForm.get('adresse_entreprise')?.invalid">L'adresse de la boutique est requise.</span>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="!vendeurForm.valid">Ouvrir ma boutique</button>
+
+    <div class="login-redirect">
+      <p>Vous avez déjà un compte ?</p>
+      <button type="button" class="btn-link" routerLink="/login">Se connecter</button>
+    </div>
+  </form>
+</div>

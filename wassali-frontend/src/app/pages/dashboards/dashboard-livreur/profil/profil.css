@@ -1,0 +1,256 @@
+/* ═══════════════════════════════════════════════
+   PROFIL — HERO PACKAGE THEME
+═══════════════════════════════════════════════ */
+
+:host {
+  --dark-mauve: #4A3B4D;
+  --dark-mauve-2: #5f4d63;
+  --light-mauve: #F3E8F5;
+  --metallic-silver: #E2E2E7;
+  --border-color: rgba(74,59,77,0.12);
+  --text-dark: #2f2732;
+  --text-muted: #6b7280;
+  --success: #22c55e;
+  --danger: #ef4444;
+}
+
+/* ── PAGE ───────────────────────────────────── */
+.page-section {
+  animation: fadeIn .35s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── HEADER ─────────────────────────────────── */
+.profil-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 26px;
+  padding: 22px;
+  border-radius: 26px;
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 26px rgba(74,59,77,.06);
+}
+
+/* Avatar */
+.profil-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 20px;
+  color: white;
+  background: linear-gradient(135deg, var(--dark-mauve), var(--dark-mauve-2));
+  box-shadow: 0 12px 26px rgba(74,59,77,.2);
+}
+
+/* Title */
+.profil-title h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--dark-mauve);
+}
+
+.role-tag {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  background: rgba(243,232,245,.9);
+  color: var(--dark-mauve);
+  border: 1px solid var(--border-color);
+}
+
+/* ── LOADING ────────────────────────────────── */
+.loading-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  padding: 40px;
+  background: rgba(255,255,255,.78);
+  border-radius: 24px;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.spinner-small {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(74,59,77,.2);
+  border-top-color: var(--dark-mauve);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── GRID ───────────────────────────────────── */
+.profil-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+/* ── CARDS ─────────────────────────────────── */
+.profil-card {
+  background: rgba(255,255,255,.78);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 26px;
+  padding: 22px;
+  box-shadow: 0 10px 26px rgba(74,59,77,.06);
+  transition: all .25s ease;
+}
+
+.profil-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(74,59,77,.12);
+}
+
+/* ── CARD HEADER ────────────────────────────── */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.card-header svg {
+  width: 20px;
+  height: 20px;
+  color: var(--dark-mauve);
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--dark-mauve);
+}
+
+/* ── INFO LIST ──────────────────────────────── */
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.info-group label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.value {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.value.highlight {
+  color: var(--dark-mauve);
+}
+
+/* ── STATUS SECTION ─────────────────────────── */
+.status-section {
+  position: relative;
+}
+
+/* dispo block */
+.dispo-control {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+.dispo-info label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.dispo-info p {
+  margin: 4px 0 0;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.dispo-info p.online {
+  color: var(--success);
+}
+
+.dispo-info p.offline {
+  color: var(--danger);
+}
+
+/* ── TOGGLE SWITCH ─────────────────────────── */
+.toggle-switch {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.08);
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: all .25s ease;
+}
+
+.toggle-switch.active {
+  background: linear-gradient(135deg, var(--dark-mauve), var(--dark-mauve-2));
+}
+
+.switch-ball {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: all .25s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+.toggle-switch.active .switch-ball {
+  transform: translateX(20px);
+}
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 900px) {
+  .profil-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .profil-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profil-avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 22px;
+  }
+}

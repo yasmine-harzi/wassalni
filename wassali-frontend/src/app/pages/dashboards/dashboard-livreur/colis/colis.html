@@ -1,0 +1,50 @@
+<div class="page-section">
+  <h2 class="section-title">📦 Mes Colis</h2>
+
+  <!-- Filtres -->
+  <div class="filtres">
+    <button *ngFor="let f of ['Tous','Ramassé','En route','Livré','Annulé']" (click)="filtre = f"
+      [class.actif]="filtre === f">
+      {{ f === 'tous' ? 'Tous' : f }}
+    </button>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="loading-card">Chargement...</div>
+
+  <!-- Vide -->
+  <div *ngIf="!loading && colisFiltres.length === 0" class="empty-card">
+    <span>📭</span>
+    <p>Aucun colis {{ filtre !== 'tous' ? 'avec ce statut' : 'assigné' }}</p>
+  </div>
+
+  <!-- Liste -->
+  <div class="colis-grid" *ngIf="!loading">
+    <div class="colis-card" *ngFor="let c of colisFiltres">
+      <div class="colis-header">
+        <span class="colis-id">#{{ c.id_colis }}</span>
+        <span class="badge" [ngClass]="badgeClass(c.statut)">{{ c.statut }}</span>
+      </div>
+      <div class="colis-body">
+        <p *ngIf="c.description"><strong>Description:</strong> {{ c.description }}</p>
+        <p *ngIf="c.poids"><strong>Poids:</strong> {{ c.poids }} kg</p>
+        <p *ngIf="c.client_nom"><strong>Client:</strong> {{ c.client_nom }}</p>
+        <p *ngIf="c.client_tel"><strong>Tél:</strong> {{ c.client_tel }}</p>
+        <p><strong>Créé le:</strong> {{ c.date_creation | date:'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <div class="colis-actions">
+        <button *ngIf="prochainStatut(c.statut)" class="btn-action"
+          (click)="updateStatut(c.id_colis, prochainStatut(c.statut)!)">
+          {{ labelStatut(prochainStatut(c.statut)) }}
+        </button>
+        <button *ngIf="c.statut === 'ramassé' || c.statut === 'en_route'" class="btn-danger"
+          (click)="updateStatut(c.id_colis, 'annulé')">
+          ✗ Annuler
+        </button>
+        <a [routerLink]="['/dashboard-livreur/suivi', c.id_colis]" *ngIf="c.statut === 'en_route'" class="btn-outline">
+          📍 Voir suivi
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

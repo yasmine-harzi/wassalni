@@ -1,0 +1,113 @@
+/* role-selector.component.css */
+
+.role-section {
+  padding: 100px 20px;
+  background: #ffffff; /* Solid white to ensure cube isn't visible behind it */
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.section-title span {
+  background: linear-gradient(90deg, #d182eda0, #2b0933);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-subtitle {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 60px;
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.role-card {
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: left; /* Left align looks more professional than center */
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.6); /* Translucent */
+  backdrop-filter: blur(12px) saturate(180%); /* Frosty effect */
+  border: 1px solid rgba(74, 59, 77, 0.1); /* Subtle Mauve border */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03); /* Soft shadow */
+}
+
+.role-card:hover {
+  border-color: #d182eda0;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+  transform: translateY(-5px);
+}
+
+.icon-container {
+  width: 54px;
+  height: 54px;
+  background: #fff5f5;
+  color: #d182eda0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.icon-container svg {
+  width: 28px;
+  height: 28px;
+}
+
+.role-card:hover .icon-container {
+  background: #d182eda0;
+  color: #fff;
+}
+
+.role-card h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #111;
+}
+
+.role-card p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  flex-grow: 1;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #111;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.arrow-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.role-card:hover .arrow-icon {
+  transform: translateX(5px);
+  color: #d182eda0;
+}

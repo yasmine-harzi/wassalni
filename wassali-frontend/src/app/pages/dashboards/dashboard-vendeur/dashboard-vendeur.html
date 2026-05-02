@@ -1,0 +1,539 @@
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>WASSALI</h1>
+    </div>
+
+    <nav class="menu-items">
+      <a [class.active]="activeMenu === 'dashboard'" (click)="setMenu('dashboard')">
+        Tableau de bord
+      </a>
+      <a [class.active]="activeMenu === 'colis'" (click)="setMenu('colis')">
+        Mes Colis
+      </a>
+      <a [class.active]="activeMenu === 'clients'" (click)="setMenu('clients')">
+        <i class="fas fa-users"></i> Mes Clients
+      </a>
+      <a [class.active]="activeMenu === 'historique'" (click)="setMenu('historique')">
+        <i class="fas fa-history"></i> Historique
+      </a>
+      <a [class.active]="activeMenu === 'parametres'" (click)="setMenu('parametres')">
+        <i class="fas fa-cog"></i> Paramètres
+      </a>
+      <a [class.active]="activeMenu === 'support'" (click)="setMenu('support')">
+        <i class="fas fa-question-circle"></i> Support
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="logout-btn" (click)="logout()">Déconnexion</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <header class="dashboard-header dashboard-header--compact">
+      <div class="header-content">
+        <h2>Bienvenue dans votre <span>espace vendeur</span></h2>
+        <p>Gérez vos expéditions, suivez vos colis en temps réel et analysez vos performances.</p>
+      </div>
+    </header>
+
+    <!-- ======================== DASHBOARD ======================== -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'dashboard'">
+
+      <section class="management-section">
+        <div class="section-header">
+          <h3>Aperçu de l'activité</h3>
+          <div class="header-actions">
+            <button class="btn-primary btn-sm-action" (click)="openAddColisModal()">+ Nouveau Colis</button>
+            <button class="btn-teal btn-sm-action" (click)="openAddClientModal()">+ Ajouter un Client</button>
+          </div>
+        </div>
+
+        <div class="zones-stats zones-stats--compact">
+          <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #3498DB, #2980B9);">
+            <span class="stat-number">{{ stats.attente }}</span>
+            <span class="stat-label">En attente</span>
+          </div>
+          <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">
+            <span class="stat-number">{{ stats.ramasse }}</span>
+            <span class="stat-label">Ramassé</span>
+          </div>
+          <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #F39C12, #D35400);">
+            <span class="stat-number">{{ stats.en_route }}</span>
+            <span class="stat-label">En route</span>
+          </div>
+          <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #27AE60, #219150);">
+            <span class="stat-number">{{ stats.livre }}</span>
+            <span class="stat-label">Livrés</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================== MES COLIS ======================== -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'colis'">
+      <section class="management-section">
+        <div class="section-header">
+          <h3>Liste des Expéditions</h3>
+          <div class="header-actions">
+            <button class="btn-primary btn-sm-action" (click)="openAddColisModal()">+ Nouveau Colis</button>
+            <button class="btn-teal btn-sm-action" (click)="openAddClientModal()">+ Ajouter un Client</button>
+          </div>
+        </div>
+        <div class="zones-stats zones-stats--compact">
+          <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #3498DB, #2980B9);">
+            <span class="stat-number">{{ stats.attente }}</span>
+            <span class="stat-label">En attente</span>
+          </div>
+          <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">
+            <span class="stat-number">{{ stats.ramasse }}</span>
+            <span class="stat-label">Ramassé</span>
+          </div>
+          <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #F39C12, #D35400);">
+            <span class="stat-number">{{ stats.en_route }}</span>
+            <span class="stat-label">En route</span>
+          </div>
+          <div class="stat-card stat-card--sm" style="background: linear-gradient(135deg, #27AE60, #219150);">
+            <span class="stat-number">{{ stats.livre }}</span>
+            <span class="stat-label">Livrés</span>
+          </div>
+        </div><br>
+
+        <div class="search-bar-wrapper">
+          <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="filtrerColis()" class="search-input"
+              placeholder="Rechercher par ID de colis ou nom de client...">
+            <button *ngIf="searchQuery" class="search-clear" (click)="clearSearch()">✕</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="management-table">
+            <thead>
+              <tr>
+                <th>ID Colis</th>
+                <th>Description</th>
+                <th>Poids</th>
+                <th>Client</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of colisFiltres; track c.id) {
+              <tr>
+                <td>#{{ c.id }}</td>
+                <td>{{ c.description }}</td>
+                <td>{{ c.poids }} kg</td>
+                <td>{{ c.nomClient || '—' }}</td>
+                <td>
+                  <span class="badge" [class]="c.statut">{{ c.statut }}</span>
+                </td>
+                <td class="actions-cell">
+                  <button class="btn-sm btn-info" (click)="ouvrirDetailsModal(c)">Détails</button>
+                  <button class="btn-sm btn-annuler" (click)="supprimerColis(c)">Supprimer</button>
+                </td>
+              </tr>
+              }
+              @if (colisFiltres.length === 0) {
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem; color: #6B7A8A;">
+                  {{ searchQuery ? 'Aucun résultat pour "' + searchQuery + '".' : 'Aucun colis enregistré pour le
+                  moment.' }}
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================== MES CLIENTS ======================== -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'clients'">
+      <section class="management-section">
+        <div class="section-header">
+          <div>
+            <h3>Mes clients</h3>
+            <p style="margin: 0.25rem 0 0; color: #6B7A8A; font-size: 0.88rem; font-weight: 400;">Gérez votre base de
+              clients</p>
+          </div>
+          <button class="btn-primary btn-sm-action" (click)="openAddClientModal()">+ Ajouter un client</button>
+        </div>
+
+        <div class="search-bar-wrapper" style="margin-top: 1rem;">
+          <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" [(ngModel)]="searchClientQuery" (ngModelChange)="filtrerClients()" class="search-input"
+              placeholder="Rechercher un client...">
+            <button *ngIf="searchClientQuery" class="search-clear" (click)="clearSearchClient()">✕</button>
+          </div>
+        </div>
+
+        <div class="clients-grid">
+          @for (cl of clientsFiltres; track cl.id) {
+          <div class="client-card">
+            <div class="client-card-header">
+              <div class="client-avatar">{{ (cl.nom || '?')[0] | uppercase }}</div>
+              <div class="client-header-info">
+                <h4 class="client-name">{{ cl.nom }}</h4>
+                <p class="client-tag">{{ cl.type_client === 'entreprise' ? 'Client entreprise' : 'Client régulier' }}</p>
+              </div>
+              <button class="btn-delete-client" (click)="supprimerClient(cl)" title="Supprimer le client">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <div class="client-card-body">
+              <div class="client-info-row" *ngIf="cl.telephone">
+                <i class="fas fa-phone client-icon"></i>
+                <span>{{ cl.telephone }}</span>
+              </div>
+              <div class="client-info-row">
+                <i class="fas fa-envelope client-icon"></i>
+                <span>{{ cl.email }}</span>
+              </div>
+              <div class="client-info-row" *ngIf="cl.adresse">
+                <i class="fas fa-map-marker-alt client-icon"></i>
+                <span>{{ cl.adresse }}</span>
+              </div>
+            </div>
+          </div>
+          }
+          @if (clientsFiltres.length === 0) {
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #6B7A8A;">
+            {{ searchClientQuery ? 'Aucun client trouvé pour "' + searchClientQuery + '".' : 'Aucun client enregistré.
+            Commencez par en ajouter un !' }}
+          </div>
+          }
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================== HISTORIQUE ======================== -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'historique'">
+      <section class="management-section">
+        <div class="section-header">
+          <h3>Historique des expéditions</h3>
+        </div>
+        <div class="table-container">
+          <table class="management-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Description</th>
+                <th>Poids</th>
+                <th>Date</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (h of historiqueColis; track h.id) {
+              <tr>
+                <td>#{{ h.id }}</td>
+                <td>{{ h.description }}</td>
+                <td>{{ h.poids }} kg</td>
+                <td>{{ h.date }}</td>
+                <td><span class="badge" [class]="h.statut">{{ h.statut }}</span></td>
+              </tr>
+              }
+              @if (historiqueColis.length === 0) {
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: #6B7A8A;">Aucune expédition dans
+                  l'historique.</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================== PARAMÈTRES ======================== -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'parametres'">
+      <div class="settings-page-header">
+        <h2 class="settings-title">Paramètres</h2>
+        <p class="settings-subtitle">Gérez vos préférences et votre compte</p>
+      </div>
+      <div class="settings-container">
+
+        <!-- ── Profil ── -->
+        <section class="settings-section">
+          <div class="settings-section-title">
+            <span class="settings-icon settings-icon--purple"><i class="fas fa-user"></i></span>
+            <h3>Profil</h3>
+          </div>
+          <div class="form-group">
+            <label>Nom complet</label>
+            <input type="text" class="form-input" [(ngModel)]="profil.nom">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-input" [(ngModel)]="profil.email">
+          </div>
+          <div class="form-group">
+            <label>Téléphone</label>
+            <input type="tel" class="form-input" [(ngModel)]="profil.telephone" placeholder="+216 20 123 456">
+          </div>
+          <button class="btn-primary" (click)="enregistrerModifications()">Enregistrer les modifications</button>
+        </section>
+
+        <!-- ── Notifications ── -->
+        <section class="settings-section">
+          <div class="settings-section-title">
+            <span class="settings-icon settings-icon--green"><i class="fas fa-bell"></i></span>
+            <h3>Notifications</h3>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-label">Notifications par email</span>
+              <span class="toggle-desc">Recevez des alertes par email</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" [(ngModel)]="parametres.notifEmail">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-label">Notifications SMS</span>
+              <span class="toggle-desc">Recevez des alertes par SMS</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" [(ngModel)]="parametres.notifSms">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-label">Notifications push</span>
+              <span class="toggle-desc">Recevez des notifications sur votre appareil</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" [(ngModel)]="parametres.notifPush">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </section>
+
+        <!-- ── Langue ── -->
+        <section class="settings-section">
+          <div class="settings-section-title">
+            <span class="settings-icon settings-icon--blue"><i class="fas fa-globe"></i></span>
+            <h3>Langue</h3>
+          </div>
+          <div class="form-group" style="max-width: 320px;">
+            <select class="form-input form-select" [(ngModel)]="parametres.langue">
+              <option value="fr">Français</option>
+              <option value="ar">العربية</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- ── Sécurité ── -->
+        <section class="settings-section">
+          <div class="settings-section-title">
+            <span class="settings-icon settings-icon--orange"><i class="fas fa-lock"></i></span>
+            <h3>Sécurité</h3>
+          </div>
+          <div class="security-row" (click)="ouvrirChangerMotDePasse()">
+            <span>Changer le mot de passe</span>
+            <i class="fas fa-chevron-right" style="color:#6B7A8A;"></i>
+          </div>
+          <div class="security-row">
+            <span>Authentification à deux facteurs</span>
+            <label class="toggle-switch">
+              <input type="checkbox" [(ngModel)]="parametres.auth2fa">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </section>
+
+        <!-- ── Zone dangereuse ── -->
+        <section class="settings-section settings-section--danger">
+          <h3 class="danger-title">Zone dangereuse</h3>
+          <button class="btn-danger-solid" (click)="supprimerCompte()">Supprimer mon compte</button>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ======================== SUPPORT ======================== -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'support'">
+      <section class="management-section" style="text-align: center; padding: 3rem;">
+        <i class="fas fa-headset" style="font-size: 3rem; color: var(--mauve-primary); margin-bottom: 1rem;"></i>
+        <h3>Besoin d'aide ?</h3>
+        <p>Notre équipe de support est disponible 24/7 pour vous accompagner.</p>
+        <button class="btn-primary" style="margin-top: 1rem;">Contacter le support</button>
+      </section>
+    </div>
+
+  </main>
+</div>
+
+<!-- ======================== MODAL NOUVEAU COLIS ======================== -->
+@if (showModal) {
+<div class="modal-overlay" (click)="showModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Nouvelle Expédition</h2>
+      <button class="close-btn" (click)="showModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Description du produit :</label>
+        <input type="text" [(ngModel)]="newColis.description" #descRef="ngModel" required class="form-input"
+          [class.is-invalid]="descRef.invalid && (descRef.dirty || descRef.touched)"
+          placeholder="Ex: Chaussures de sport">
+        <div *ngIf="descRef.invalid && (descRef.dirty || descRef.touched)" class="error-msg">
+          La description est requise.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Poids (kg) :</label>
+        <input type="number" [(ngModel)]="newColis.poids" #poidsRef="ngModel" required min="0.1" class="form-input"
+          [class.is-invalid]="poidsRef.invalid && (poidsRef.dirty || poidsRef.touched)" placeholder="0.0">
+        <div *ngIf="poidsRef.invalid && (poidsRef.dirty || poidsRef.touched)" class="error-msg">
+          <span *ngIf="poidsRef.errors?.['required']">Le poids est requis.</span>
+          <span *ngIf="poidsRef.errors?.['min']">Le poids doit être supérieur à 0.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Client concerné :</label>
+        <select [(ngModel)]="newColis.id_client" #clientRef="ngModel" required class="form-input form-select"
+          [class.is-invalid]="clientRef.invalid && (clientRef.dirty || clientRef.touched)">
+          <option [ngValue]="null" disabled>-- Sélectionner un client --</option>
+          @for (client of clients; track client.id) {
+          <option [ngValue]="client.id">{{ client.nom }} — {{ client.email }}</option>
+          }
+        </select>
+        <div *ngIf="clientRef.invalid && (clientRef.dirty || clientRef.touched)" class="error-msg">
+          Veuillez sélectionner un client.
+        </div>
+        <span *ngIf="clients.length === 0" class="form-hint">Aucun client disponible. Ajoutez d'abord un client.</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="showModal = false">Annuler</button>
+      <button class="btn-primary" (click)="ajouterColis()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- ======================== MODAL AJOUTER CLIENT ======================== -->
+@if (showClientModal) {
+<div class="modal-overlay" (click)="showClientModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header modal-header--teal">
+      <h2>Nouveau Client</h2>
+      <button class="close-btn" (click)="showClientModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nom complet :</label>
+        <input type="text" [(ngModel)]="newClient.nom" #nomRef="ngModel" required class="form-input"
+          [class.is-invalid]="nomRef.invalid && (nomRef.dirty || nomRef.touched)" placeholder="Ex: Ahmed Ben Ali">
+        <div *ngIf="nomRef.invalid && (nomRef.dirty || nomRef.touched)" class="error-msg">
+          Le nom est requis.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email :</label>
+        <input type="email" [(ngModel)]="newClient.email" #emailRef="ngModel" required email class="form-input"
+          [class.is-invalid]="emailRef.invalid && (emailRef.dirty || emailRef.touched)" placeholder="client@email.com">
+        <div *ngIf="emailRef.invalid && (emailRef.dirty || emailRef.touched)" class="error-msg">
+          <span *ngIf="emailRef.errors?.['required']">L'email est requis.</span>
+          <span *ngIf="emailRef.errors?.['email']">Veuillez entrer un email valide.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Téléphone :</label>
+        <input type="tel" [(ngModel)]="newClient.telephone" #telRef="ngModel" required pattern="[0-9]{8,}"
+          class="form-input" [class.is-invalid]="telRef.invalid && (telRef.dirty || telRef.touched)"
+          placeholder="Ex: 20111222">
+        <div *ngIf="telRef.invalid && (telRef.dirty || telRef.touched)" class="error-msg">
+          <span *ngIf="telRef.errors?.['required']">Le téléphone est requis.</span>
+          <span *ngIf="telRef.errors?.['pattern']">Minimum 8 chiffres (chiffres uniquement).</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Adresse :</label>
+        <input type="text" [(ngModel)]="newClient.adresse" #adresseRef="ngModel" required class="form-input"
+          [class.is-invalid]="adresseRef.invalid && (adresseRef.dirty || adresseRef.touched)"
+          placeholder="Ex: 12 Rue de la Liberté, Tunis">
+        <div *ngIf="adresseRef.invalid && (adresseRef.dirty || adresseRef.touched)" class="error-msg">
+          L'adresse est requise.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="showClientModal = false">Annuler</button>
+      <button class="btn-teal" (click)="ajouterClient()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- ======================== MODAL DÉTAILS COLIS ======================== -->
+@if (showDetailsModal && colisSelectionne) {
+<div class="modal-overlay" (click)="showDetailsModal = false">
+  <div class="modal modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Détails — Colis #{{ colisSelectionne.id }}</h2>
+      <button class="close-btn" (click)="showDetailsModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="details-grid">
+        <div class="detail-item">
+          <span class="detail-label">Description</span>
+          <span class="detail-value">{{ colisSelectionne.description }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Poids</span>
+          <span class="detail-value">{{ colisSelectionne.poids }} kg</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Client</span>
+          <span class="detail-value">{{ colisSelectionne.nomClient || '—' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Date de création</span>
+          <span class="detail-value">{{ colisSelectionne.date_creation || colisSelectionne.date || '—' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Statut actuel</span>
+          <span class="badge" [class]="colisSelectionne.statut">{{ colisSelectionne.statut }}</span>
+        </div>
+        <div class="detail-item" *ngIf="colisSelectionne.nomCoursier">
+          <span class="detail-label">Coursier assigné</span>
+          <span class="detail-value">{{ colisSelectionne.nomCoursier }}</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 1.5rem; border-top: 1px solid #E6EAF0; padding-top: 1.25rem;">
+        <label>Changer le statut :</label>
+        <select [(ngModel)]="nouveauStatut" class="form-input form-select">
+          <option value="attente">En attente</option>
+          <option value="ramassé">Ramassé</option>
+          <option value="en_route">En route</option>
+          <option value="livré">Livré</option>
+          <option value="annulé">Annulé</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="showDetailsModal = false">Fermer</button>
+      <button class="btn-primary" (click)="changerStatut()">Enregistrer le statut</button>
+    </div>
+  </div>
+</div>
+}
