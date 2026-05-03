@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
-import { getLoggedId } from '../dashboard-livreur';
+import { getLoggedId } from '../dashboard-coursier';
 
 @Component({
   selector: 'app-notifications',
@@ -29,3 +29,4 @@ export class NotificationsComponent implements OnInit {
   toutLire() { this.svc.marquerTousLus(getLoggedId()).subscribe({ next: () => this.notifs.forEach(n => n.lu = 1) }); }
   get nonLus() { return this.notifs.filter(n => !n.lu).length; }
 }
+

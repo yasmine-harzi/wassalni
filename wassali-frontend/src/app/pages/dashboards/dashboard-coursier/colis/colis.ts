@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ColisService } from '../../../../services/colis.service';
-import { getLoggedId } from '../dashboard-livreur';
+import { getLoggedId } from '../dashboard-coursier';
 
 @Component({
   selector: 'app-colis',
@@ -81,4 +81,16 @@ export class ColisComponent implements OnInit {
     };
     return map[s] ?? '';
   }
+
+  formatStatut(s: string): string {
+    const map: Record<string, string> = {
+      'attente': 'En attente',
+      'ramassé': 'Ramassé',
+      'en_route': 'En route',
+      'livré': 'Livré',
+      'annulé': 'Annulé'
+    };
+    return map[s] || s;
+  }
 }
+

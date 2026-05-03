@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ColisService } from '../../../../services/colis.service';
-import { getLoggedId } from '../dashboard-livreur';
+import { getLoggedId } from '../dashboard-coursier';
 
 @Component({
   selector: 'app-disponibles',
@@ -43,3 +43,4 @@ export class DisponiblesComponent implements OnInit {
     });
   }
 }
+

@@ -15,24 +15,24 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a routerLink="/dashboard-livreur" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <a routerLink="/dashboard-coursier" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Tableau de bord
       </a>
-      <a routerLink="/dashboard-livreur/colis" routerLinkActive="active">
+      <a routerLink="/dashboard-coursier/colis" routerLinkActive="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16v-2"/><polyline points="7.5 4.21 12 6.81 16.5 4.21"/><polyline points="7.5 19.79 7.5 14.6 3 12"/><polyline points="21 12 16.5 14.6 16.5 19.79"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         Mes colis
       </a>
-      <a routerLink="/dashboard-livreur/disponibles" routerLinkActive="active">
+      <a routerLink="/dashboard-coursier/disponibles" routerLinkActive="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         Colis disponibles
       </a>
-      <a routerLink="/dashboard-livreur/notifications" routerLinkActive="active">
+      <a routerLink="/dashboard-coursier/notifications" routerLinkActive="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         Notifications
         <span class="notif-badge" *ngIf="nbNotifs > 0">{{ nbNotifs }}</span>
       </a>
-      <a routerLink="/dashboard-livreur/profil" routerLinkActive="active">
+      <a routerLink="/dashboard-coursier/profil" routerLinkActive="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Mon profil
       </a>
@@ -52,9 +52,9 @@
       <button class="menu-toggle" (click)="toggleMenu()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <h1 class="topbar-title">Dashboard Livreur</h1>
+      <h1 class="topbar-title">Dashboard Coursier</h1>
       <div class="topbar-right">
-        <a routerLink="/dashboard-livreur/notifications" class="topbar-notif">
+        <a routerLink="/dashboard-coursier/notifications" class="topbar-notif">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="notif-badge" *ngIf="nbNotifs > 0">{{ nbNotifs }}</span>
         </a>
@@ -65,7 +65,7 @@
     </header>
 
     <div class="page-content">
-      <!-- Résumé rapide si on est sur /dashboard-livreur exactement -->
+      <!-- Résumé rapide si on est sur /dashboard-coursier exactement -->
       <ng-container *ngIf="!isSubPage()">
         <section class="welcome-banner">
           <div>
@@ -77,21 +77,59 @@
           </div>
         </section>
 
+        <div class="stats-header-row">
+          <h3 class="section-title">Statistiques</h3>
+          <div class="period-toggle">
+            <button [class.active]="periode === 'tous'" (click)="setPeriode('tous')">Tout</button>
+            <button [class.active]="periode === 'jour'" (click)="setPeriode('jour')">Jour</button>
+            <button [class.active]="periode === 'semaine'" (click)="setPeriode('semaine')">Semaine</button>
+            <button [class.active]="periode === 'mois'" (click)="setPeriode('mois')">Mois</button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon blue">📦</span>
+              <span class="stat-label">Ramassé</span>
+            </div>
+            <div class="stat-value">{{ stats.ramasse }}</div>
+            <div class="stat-footer">Colis récupérés</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon yellow">🚚</span>
+              <span class="stat-label">En route</span>
+            </div>
+            <div class="stat-value">{{ stats.enRoute }}</div>
+            <div class="stat-footer">En cours de livraison</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon green">✅</span>
+              <span class="stat-label">Livré</span>
+            </div>
+            <div class="stat-value">{{ stats.livre }}</div>
+            <div class="stat-footer">Total livraisons</div>
+          </div>
+        </div>
+
+        <h3 class="section-title" style="margin: 2rem 0 1rem; font-size: 1.2rem; color: #444;">Actions rapides</h3>
         <div class="quick-links">
-          <a routerLink="/dashboard-livreur/colis" class="quick-card">
+          <a routerLink="/dashboard-coursier/colis" class="quick-card">
             <span class="card-icon">📦</span>
             <span>Mes colis</span>
           </a>
-          <a routerLink="/dashboard-livreur/disponibles" class="quick-card">
+          <a routerLink="/dashboard-coursier/disponibles" class="quick-card">
             <span class="card-icon">🔍</span>
             <span>Colis disponibles</span>
           </a>
-          <a routerLink="/dashboard-livreur/notifications" class="quick-card">
+          <a routerLink="/dashboard-coursier/notifications" class="quick-card">
             <span class="card-icon">🔔</span>
             <span>Notifications</span>
             <span class="notif-badge sm" *ngIf="nbNotifs > 0">{{ nbNotifs }}</span>
           </a>
-          <a routerLink="/dashboard-livreur/profil" class="quick-card">
+          <a routerLink="/dashboard-coursier/profil" class="quick-card">
             <span class="card-icon">👤</span>
             <span>Mon profil</span>
           </a>
@@ -102,3 +140,4 @@
     </div>
   </main>
 </div>
+

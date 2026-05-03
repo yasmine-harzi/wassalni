@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoursierService } from '../../../../services/coursier.service';
-import { getLoggedId } from '../dashboard-livreur';
+import { getLoggedId } from '../dashboard-coursier';
 
 @Component({
   selector: 'app-profil',
@@ -26,3 +26,4 @@ export class ProfilComponent implements OnInit {
     this.svc.toggleDisponibilite(getLoggedId(), newVal).subscribe({ next: () => (this.profil.disponibilite = newVal) });
   }
 }
+

@@ -7,7 +7,8 @@ import { RegisterClient } from './pages/register-client/register-client';
 import { RegisterLivreur } from './pages/register-livreur/register-livreur';
 import { RegisterVendeur } from './pages/register-vendeur/register-vendeur';
 import { DashboardVendeurComponent } from './pages/dashboards/dashboard-vendeur/dashboard-vendeur';
-
+import { DashboardClientComponent } from './pages/dashboards/dashboard-client/dashboard-client';
+import { DashboardAdminComponent } from './pages/dashboards/dashboard-admin/dashboard-admin';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent }, 
@@ -19,41 +20,46 @@ export const routes: Routes = [
   { path: 'register-livreur', component: RegisterLivreur },
   { path: 'register-vendeur', component: RegisterVendeur },
 
-  // ─── Dashboard Livreur ───────────────────────────────
+  // ─── Dashboards ───────────────────────────────
+  { path: 'dashboard-client', component: DashboardClientComponent },
+  { path: 'dashboard-admin', component: DashboardAdminComponent },
+  { path: 'dashboard-vendeur', component: DashboardVendeurComponent },
+
+  // ─── Dashboard Coursier ───────────────────────────────
   {
-    path: 'dashboard-livreur',
+    path: 'dashboard-coursier',
     loadComponent: () =>
-      import('./pages/dashboards/dashboard-livreur/dashboard-livreur')
-        .then(m => m.DashboardLivreur),
+      import('./pages/dashboards/dashboard-coursier/dashboard-coursier')
+        .then(m => m.DashboardCoursier),
     children: [
       {
         path: 'colis',
         loadComponent: () =>
-          import('./pages/dashboards/dashboard-livreur/colis/colis')
+          import('./pages/dashboards/dashboard-coursier/colis/colis')
             .then(m => m.ColisComponent)
       },
       {
         path: 'disponibles',
         loadComponent: () =>
-          import('./pages/dashboards/dashboard-livreur/disponibles/disponibles')
+          import('./pages/dashboards/dashboard-coursier/disponibles/disponibles')
             .then(m => m.DisponiblesComponent)
       },
       {
         path: 'suivi/:id',
         loadComponent: () =>
-          import('./pages/dashboards/dashboard-livreur/suivi/suivi')
+          import('./pages/dashboards/dashboard-coursier/suivi/suivi')
             .then(m => m.SuiviComponent)
       },
       {
         path: 'notifications',
         loadComponent: () =>
-          import('./pages/dashboards/dashboard-livreur/notifications/notifications')
+          import('./pages/dashboards/dashboard-coursier/notifications/notifications')
             .then(m => m.NotificationsComponent)
       },
       {
         path: 'profil',
         loadComponent: () =>
-          import('./pages/dashboards/dashboard-livreur/profil/profil')
+          import('./pages/dashboards/dashboard-coursier/profil/profil')
             .then(m => m.ProfilComponent)
       }
     ]

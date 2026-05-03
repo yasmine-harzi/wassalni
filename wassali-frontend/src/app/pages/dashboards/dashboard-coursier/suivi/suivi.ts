@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ColisService } from '../../../../services/colis.service';
 import { CoursierService } from '../../../../services/coursier.service';
-import { getLoggedId } from '../dashboard-livreur';
+import { getLoggedId } from '../dashboard-coursier';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -66,3 +66,4 @@ export class SuiviComponent implements OnInit {
     });
   }
 }
+

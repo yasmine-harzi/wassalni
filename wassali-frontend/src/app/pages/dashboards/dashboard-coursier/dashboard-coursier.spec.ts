@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardLivreur } from './dashboard-livreur';
+import { DashboardCoursier } from './dashboard-coursier';
 
-describe('DashboardLivreur', () => {
-  let component: DashboardLivreur;
-  let fixture: ComponentFixture<DashboardLivreur>;
+describe('DashboardCoursier', () => {
+  let component: DashboardCoursier;
+  let fixture: ComponentFixture<DashboardCoursier>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardLivreur]
+      imports: [DashboardCoursier]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DashboardLivreur);
+    fixture = TestBed.createComponent(DashboardCoursier);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,3 +21,4 @@ describe('DashboardLivreur', () => {
     expect(component).toBeTruthy();
   });
 });
+

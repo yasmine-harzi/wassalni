@@ -23,7 +23,7 @@
     <div class="colis-card" *ngFor="let c of colisFiltres">
       <div class="colis-header">
         <span class="colis-id">#{{ c.id_colis }}</span>
-        <span class="badge" [ngClass]="badgeClass(c.statut)">{{ c.statut }}</span>
+        <span class="badge" [ngClass]="badgeClass(c.statut)">{{ formatStatut(c.statut) }}</span>
       </div>
       <div class="colis-body">
         <p *ngIf="c.description"><strong>Description:</strong> {{ c.description }}</p>
@@ -41,7 +41,7 @@
           (click)="updateStatut(c.id_colis, 'annulé')">
           ✗ Annuler
         </button>
-        <a [routerLink]="['/dashboard-livreur/suivi', c.id_colis]" *ngIf="c.statut === 'en_route'" class="btn-outline">
+        <a [routerLink]="['/dashboard-coursier/suivi', c.id_colis]" *ngIf="c.statut === 'en_route'" class="btn-outline">
           📍 Voir suivi
         </a>
       </div>
