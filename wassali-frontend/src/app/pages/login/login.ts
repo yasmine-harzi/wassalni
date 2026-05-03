@@ -19,9 +19,9 @@ export class Login {
 
   // On injecte le service d'authentification et le routeur
   constructor(
-    private authService: AuthService, 
+    private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   onLogin() {
     this.authService.login(this.credentials).subscribe({
@@ -30,7 +30,7 @@ export class Login {
 
         // --- LOGIQUE DE REDIRECTION ---
         if (user.role === 'admin') {
-          this.router.navigate(['/pages/dashboards/dashboard-administrateur']); 
+          this.router.navigate(['/pages/dashboards/dashboard-administrateur']);
         } else if (user.role === 'vendeur') {
           this.router.navigate(['/pages/dashboards/dashboard-vendeur']);
         } else if (user.role === 'client') {

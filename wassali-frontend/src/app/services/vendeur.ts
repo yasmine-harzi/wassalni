@@ -65,4 +65,18 @@ export class VendeurService {
   updateProfilVendeur(idVendeur: number, data: { nom: string; email: string }): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/vendeur/${idVendeur}/profil`, data);
   }
+
+  // Support
+  envoyerTicketSupport(data: { id_vendeur: number, email: string, message: string }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/support/ticket`, data);
+  }
+
+  // Notifications
+  getNotifications(idUser: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/notifications/${idUser}`);
+  }
+
+  marquerNotificationLue(idNotif: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/notifications/${idNotif}/lu`, {});
+  }
 }

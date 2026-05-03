@@ -52,6 +52,11 @@ class ProfilVendeurSchema(BaseModel):
 class StatutSchema(BaseModel):
     statut: str
 
+class SupportTicketSchema(BaseModel):
+    id_vendeur: int
+    email: str
+    message: str
+
 # 3. Connexion DB
 def get_db_connection():
     return mysql.connector.connect(
@@ -59,6 +64,13 @@ def get_db_connection():
         user="root",
         password="",
         database="wassali-backend"
+    )
+
+# Helper pour créer une notification
+def create_notification(cursor, id_user, message):
+    cursor.execute(
+        "INSERT INTO notifications (message, id_user) VALUES (%s, %s)",
+        (message, id_user)
     )
 
 # --- LOGIQUE D'INSCRIPTION SYNCHRONISÉE ---
@@ -180,9 +192,16 @@ def ajouter_colis(colis: ColisSchema):
             VALUES (%s, %s, %s, %s, 'attente')
         """
         cursor.execute(query, (colis.description, colis.poids, colis.id_vendeur, colis.id_client))
-        conn.commit()
         new_id = cursor.lastrowid
+        
+        # Notification
+        cursor.execute("SELECT id_user FROM vendeur WHERE id_vendeur = %s", (colis.id_vendeur,))
+        vend = cursor.fetchone()
+        if vend:
+            create_notification(cursor, vend["id_user"], f"📦 Nouveau colis ajouté : {colis.description} (ID: {new_id})")
 
+        conn.commit()
+        
         # Retourner le colis créé avec le nom du client
         cursor.execute("""
             SELECT c.id_colis AS id, c.description, c.poids, c.statut, c.date_creation,
@@ -208,12 +227,21 @@ def supprimer_colis(id_colis: int):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        cursor.execute("SELECT id_colis FROM colis WHERE id_colis = %s", (id_colis,))
-        if not cursor.fetchone():
+        cursor.execute("SELECT id_vendeur FROM colis WHERE id_colis = %s", (id_colis,))
+        row = cursor.fetchone()
+        if not row:
             raise HTTPException(status_code=404, detail="Colis introuvable")
-        
+        id_vendeur_local = row["id_vendeur"]
+
         # Supprimer le colis (les suivis associés seront supprimés par ON DELETE CASCADE)
         cursor.execute("DELETE FROM colis WHERE id_colis = %s", (id_colis,))
+        
+        # Notification
+        cursor.execute("SELECT id_user FROM vendeur WHERE id_vendeur = %s", (id_vendeur_local,))
+        vend = cursor.fetchone()
+        if vend:
+            create_notification(cursor, vend["id_user"], f"🗑️ Le colis #{id_colis} a été supprimé définitivement.")
+
         conn.commit()
         return {"message": "Colis supprimé avec succès"}
     except Exception as e:
@@ -238,6 +266,20 @@ def changer_statut_colis(id_colis: int, data: StatutSchema):
             raise HTTPException(status_code=404, detail="Colis introuvable")
 
         cursor.execute("UPDATE colis SET statut = %s WHERE id_colis = %s", (data.statut, id_colis))
+        
+        # Notification
+        # On récupère l'id_user du vendeur de ce colis pour être précis
+        cursor.execute("SELECT v.id_user FROM vendeur v JOIN colis c ON v.id_vendeur = c.id_vendeur WHERE c.id_colis = %s", (id_colis,))
+        vend = cursor.fetchone()
+        if vend:
+            msg = f"Le statut du colis #{id_colis} est passé à : {data.statut}"
+            if data.statut == 'livré':
+                msg = f"🎉 Félicitations ! Le colis #{id_colis} a été livré avec succès."
+            elif data.statut == 'annulé':
+                msg = f"⚠️ Le colis #{id_colis} a été annulé."
+            
+            create_notification(cursor, vend["id_user"], msg)
+
         conn.commit()
         return {"message": "Statut mis à jour", "statut": data.statut}
     except HTTPException:
@@ -341,6 +383,12 @@ def ajouter_client(data: ClientSimpleSchema):
         )
         new_client_id = cursor.lastrowid
 
+        # Notification
+        cursor.execute("SELECT id_user FROM vendeur WHERE id_vendeur = 1")
+        vend = cursor.fetchone()
+        if vend:
+            create_notification(cursor, vend["id_user"], f"✨ Nouveau client enregistré : {data.prenom} {data.nom}")
+
         conn.commit()
         return {
             "id": new_client_id,
@@ -382,7 +430,13 @@ def supprimer_client(id_client: int):
         # 3. Supprimer l'utilisateur associé
         # (Les notifications seront supprimées par ON DELETE CASCADE dans la DB)
         cursor.execute("DELETE FROM users WHERE id_user = %s", (id_user,))
-        
+
+        # Notification (On assume que le vendeur courant est id_vendeur=1 pour le moment car l'API client n'est pas liée à un vendeur spécifique)
+        cursor.execute("SELECT id_user FROM vendeur WHERE id_vendeur = 1")
+        vend = cursor.fetchone()
+        if vend:
+            create_notification(cursor, vend["id_user"], f"👤 Client supprimé : ID #{id_client}")
+
         conn.commit()
         return {"message": "Client et ses colis supprimés avec succès"}
     except Exception as e:
@@ -451,5 +505,60 @@ def update_vendeur_profil(id_vendeur: int, data: ProfilVendeurSchema):
     except Exception as e:
         conn.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+# POST /api/support/ticket
+#   Envoie un ticket de support (crée une notification pour les admins)
+@app.post("/api/support/ticket")
+def envoyer_ticket_support(data: SupportTicketSchema):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # Trouver tous les admins
+        cursor.execute("SELECT id_user FROM users WHERE role = 'admin'")
+        admins = cursor.fetchall()
+        
+        if not admins:
+            return {"message": "Ticket reçu (en attente de traitement)"}
+
+        # Message de la notification
+        notif_msg = f"Réclamation de {data.email} : {data.message}"
+        
+        # Insérer une notification pour chaque admin
+        for admin in admins:
+            cursor.execute(
+                "INSERT INTO notifications (message, id_user) VALUES (%s, %s)",
+                (notif_msg, admin["id_user"])
+            )
+        
+        conn.commit()
+        return {"message": "Ticket envoyé avec succès! Veuillez consulter votre email pour un suivi."}
+    except Exception as e:
+        if conn: conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if conn: conn.close()
+
+# GET /api/notifications/{id_user}
+@app.get("/api/notifications/{id_user}")
+def get_notifications(id_user: int):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM notifications WHERE id_user = %s ORDER BY date_envoi DESC", (id_user,))
+        return cursor.fetchall()
+    finally:
+        conn.close()
+
+# PUT /api/notifications/{id_notification}/lu
+@app.put("/api/notifications/{id_notification}/lu")
+def marquer_notification_lue(id_notification: int):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("UPDATE notifications SET lu = 1 WHERE id_notification = %s", (id_notification,))
+        conn.commit()
+        return {"message": "Notification marquée comme lue"}
     finally:
         conn.close()

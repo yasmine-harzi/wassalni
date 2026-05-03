@@ -14,11 +14,8 @@
       <a [class.active]="activeMenu === 'clients'" (click)="setMenu('clients')">
         <i class="fas fa-users"></i> Mes Clients
       </a>
-      <a [class.active]="activeMenu === 'historique'" (click)="setMenu('historique')">
-        <i class="fas fa-history"></i> Historique
-      </a>
-      <a [class.active]="activeMenu === 'parametres'" (click)="setMenu('parametres')">
-        <i class="fas fa-cog"></i> Paramètres
+      <a [class.active]="activeMenu === 'notifications'" (click)="setMenu('notifications')">
+        <i class="fas fa-bell"></i> Notifications
       </a>
       <a [class.active]="activeMenu === 'support'" (click)="setMenu('support')">
         <i class="fas fa-question-circle"></i> Support
@@ -36,6 +33,10 @@
       <div class="header-content">
         <h2>Bienvenue dans votre <span>espace vendeur</span></h2>
         <p>Gérez vos expéditions, suivez vos colis en temps réel et analysez vos performances.</p>
+      </div>
+      <div class="header-notifications" (click)="setMenu('notifications')" title="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="notif-badge" *ngIf="unreadNotifCount > 0">{{ unreadNotifCount }}</span>
       </div>
     </header>
 
@@ -198,7 +199,8 @@
               <div class="client-avatar">{{ (cl.nom || '?')[0] | uppercase }}</div>
               <div class="client-header-info">
                 <h4 class="client-name">{{ cl.nom }}</h4>
-                <p class="client-tag">{{ cl.type_client === 'entreprise' ? 'Client entreprise' : 'Client régulier' }}</p>
+                <p class="client-tag">{{ cl.type_client === 'entreprise' ? 'Client entreprise' : 'Client régulier' }}
+                </p>
               </div>
               <button class="btn-delete-client" (click)="supprimerClient(cl)" title="Supprimer le client">
                 <i class="fas fa-trash"></i>
@@ -230,154 +232,38 @@
       </section>
     </div>
 
-    <!-- ======================== HISTORIQUE ======================== -->
-    <div class="dashboard-grid" *ngIf="activeMenu === 'historique'">
+    <!-- ======================== NOTIFICATIONS ======================== -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'notifications'">
       <section class="management-section">
         <div class="section-header">
-          <h3>Historique des expéditions</h3>
+          <h3>Notifications</h3>
+          <p class="text-muted" style="margin: 0;">Restez informé de vos activités</p>
         </div>
-        <div class="table-container">
-          <table class="management-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Description</th>
-                <th>Poids</th>
-                <th>Date</th>
-                <th>Statut</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (h of historiqueColis; track h.id) {
-              <tr>
-                <td>#{{ h.id }}</td>
-                <td>{{ h.description }}</td>
-                <td>{{ h.poids }} kg</td>
-                <td>{{ h.date }}</td>
-                <td><span class="badge" [class]="h.statut">{{ h.statut }}</span></td>
-              </tr>
-              }
-              @if (historiqueColis.length === 0) {
-              <tr>
-                <td colspan="5" style="text-align: center; padding: 2rem; color: #6B7A8A;">Aucune expédition dans
-                  l'historique.</td>
-              </tr>
-              }
-            </tbody>
-          </table>
+
+        <div class="notifications-list" style="margin-top: 1.5rem;">
+          @if (notifications.length === 0) {
+          <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+            <i class="fas fa-bell-slash" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+            <p>Aucune notification pour le moment.</p>
+          </div>
+          } @else {
+          @for (notif of notifications; track notif.id_notification) {
+          <div class="notif-item" [class.unread]="!notif.lu" (click)="marquerCommeLue(notif)">
+            <div class="notif-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="notif-content">
+              <p>{{ notif.message }}</p>
+              <span class="notif-date">{{ notif.date_envoi | date:'short' }}</span>
+            </div>
+            <div class="notif-status" *ngIf="!notif.lu"></div>
+          </div>
+          }
+          }
         </div>
       </section>
     </div>
 
-    <!-- ======================== PARAMÈTRES ======================== -->
-    <div class="dashboard-grid" *ngIf="activeMenu === 'parametres'">
-      <div class="settings-page-header">
-        <h2 class="settings-title">Paramètres</h2>
-        <p class="settings-subtitle">Gérez vos préférences et votre compte</p>
-      </div>
-      <div class="settings-container">
-
-        <!-- ── Profil ── -->
-        <section class="settings-section">
-          <div class="settings-section-title">
-            <span class="settings-icon settings-icon--purple"><i class="fas fa-user"></i></span>
-            <h3>Profil</h3>
-          </div>
-          <div class="form-group">
-            <label>Nom complet</label>
-            <input type="text" class="form-input" [(ngModel)]="profil.nom">
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="email" class="form-input" [(ngModel)]="profil.email">
-          </div>
-          <div class="form-group">
-            <label>Téléphone</label>
-            <input type="tel" class="form-input" [(ngModel)]="profil.telephone" placeholder="+216 20 123 456">
-          </div>
-          <button class="btn-primary" (click)="enregistrerModifications()">Enregistrer les modifications</button>
-        </section>
-
-        <!-- ── Notifications ── -->
-        <section class="settings-section">
-          <div class="settings-section-title">
-            <span class="settings-icon settings-icon--green"><i class="fas fa-bell"></i></span>
-            <h3>Notifications</h3>
-          </div>
-          <div class="toggle-row">
-            <div class="toggle-info">
-              <span class="toggle-label">Notifications par email</span>
-              <span class="toggle-desc">Recevez des alertes par email</span>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" [(ngModel)]="parametres.notifEmail">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          <div class="toggle-row">
-            <div class="toggle-info">
-              <span class="toggle-label">Notifications SMS</span>
-              <span class="toggle-desc">Recevez des alertes par SMS</span>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" [(ngModel)]="parametres.notifSms">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          <div class="toggle-row">
-            <div class="toggle-info">
-              <span class="toggle-label">Notifications push</span>
-              <span class="toggle-desc">Recevez des notifications sur votre appareil</span>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" [(ngModel)]="parametres.notifPush">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </section>
-
-        <!-- ── Langue ── -->
-        <section class="settings-section">
-          <div class="settings-section-title">
-            <span class="settings-icon settings-icon--blue"><i class="fas fa-globe"></i></span>
-            <h3>Langue</h3>
-          </div>
-          <div class="form-group" style="max-width: 320px;">
-            <select class="form-input form-select" [(ngModel)]="parametres.langue">
-              <option value="fr">Français</option>
-              <option value="ar">العربية</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-        </section>
-
-        <!-- ── Sécurité ── -->
-        <section class="settings-section">
-          <div class="settings-section-title">
-            <span class="settings-icon settings-icon--orange"><i class="fas fa-lock"></i></span>
-            <h3>Sécurité</h3>
-          </div>
-          <div class="security-row" (click)="ouvrirChangerMotDePasse()">
-            <span>Changer le mot de passe</span>
-            <i class="fas fa-chevron-right" style="color:#6B7A8A;"></i>
-          </div>
-          <div class="security-row">
-            <span>Authentification à deux facteurs</span>
-            <label class="toggle-switch">
-              <input type="checkbox" [(ngModel)]="parametres.auth2fa">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </section>
-
-        <!-- ── Zone dangereuse ── -->
-        <section class="settings-section settings-section--danger">
-          <h3 class="danger-title">Zone dangereuse</h3>
-          <button class="btn-danger-solid" (click)="supprimerCompte()">Supprimer mon compte</button>
-        </section>
-
-      </div>
-    </div>
 
     <!-- ======================== SUPPORT ======================== -->
     <div class="dashboard-grid" *ngIf="activeMenu === 'support'">
@@ -385,7 +271,8 @@
         <i class="fas fa-headset" style="font-size: 3rem; color: var(--mauve-primary); margin-bottom: 1rem;"></i>
         <h3>Besoin d'aide ?</h3>
         <p>Notre équipe de support est disponible 24/7 pour vous accompagner.</p>
-        <button class="btn-primary" style="margin-top: 1rem;">Contacter le support</button>
+        <button class="btn-primary" style="margin-top: 1rem;" (click)="ouvrirSupportModal()">Contacter le
+          support</button>
       </section>
     </div>
 
@@ -538,19 +425,40 @@
       </div>
 
       <div class="form-group" style="margin-top: 1.5rem; border-top: 1px solid #E6EAF0; padding-top: 1.25rem;">
-        <label>Changer le statut :</label>
-        <select [(ngModel)]="nouveauStatut" class="form-input form-select">
-          <option value="attente">En attente</option>
-          <option value="ramassé">Ramassé</option>
-          <option value="en_route">En route</option>
-          <option value="livré">Livré</option>
-          <option value="annulé">Annulé</option>
-        </select>
+        <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin: 0;">
+          <i class="fas fa-info-circle"></i> Le statut du colis est mis à jour en temps réel par le coursier.
+        </p>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-outline" (click)="showDetailsModal = false">Fermer</button>
-      <button class="btn-primary" (click)="changerStatut()">Enregistrer le statut</button>
+      <button class="btn-primary" (click)="showDetailsModal = false">Fermer</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- ======================== MODAL SUPPORT ======================== -->
+@if (showSupportModal) {
+<div class="modal-overlay" (click)="showSupportModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Contacter le Support</h2>
+      <button class="close-btn" (click)="showSupportModal = false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Votre Email (pour la réponse) :</label>
+        <input type="email" [(ngModel)]="supportTicket.email" class="form-input" placeholder="votre@email.com">
+      </div>
+      <div class="form-group">
+        <label>Votre Ticket / Réclamation :</label>
+        <textarea [(ngModel)]="supportTicket.message" class="form-input" rows="5"
+          placeholder="Décrivez votre problème ici..." style="resize: none;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="showSupportModal = false">Annuler</button>
+      <button class="btn-primary" (click)="envoyerSupportTicket()">Envoyer la réclamation</button>
     </div>
   </div>
 </div>

@@ -100,7 +100,7 @@ describe('DashboardVendeurComponent', () => {
   // 2. NAVIGATION
   // ─────────────────────────────────────────────
   describe('setMenu()', () => {
-    ['colis', 'historique', 'parametres', 'support', 'dashboard'].forEach(menu => {
+    ['colis', 'notifications', 'parametres', 'support', 'dashboard'].forEach(menu => {
       it(`devrait naviguer vers "${menu}"`, () => {
         component.setMenu(menu);
         expect(component.activeMenu).toBe(menu);
@@ -330,58 +330,11 @@ describe('DashboardVendeurComponent', () => {
   });
 
   // ─────────────────────────────────────────────
-  // 8. PARAMÈTRES
+  // 9. NOTIFICATIONS
   // ─────────────────────────────────────────────
-  describe('enregistrerModifications()', () => {
-    it('devrait logguer les modifications sans erreur', () => {
-      spyOn(console, 'log');
-      component.enregistrerModifications();
-      expect(console.log).toHaveBeenCalledWith('Modifications enregistrées', component.profil);
-    });
-  });
-
-  describe('supprimerCompte()', () => {
-    it('devrait appeler confirm avant de supprimer', () => {
-      spyOn(window, 'confirm').and.returnValue(false);
-      component.supprimerCompte();
-      expect(window.confirm).toHaveBeenCalled();
-    });
-
-    it('devrait logguer "Compte supprimé" si confirmation acceptée', () => {
-      spyOn(window, 'confirm').and.returnValue(true);
-      spyOn(console, 'log');
-      component.supprimerCompte();
-      expect(console.log).toHaveBeenCalledWith('Compte supprimé');
-    });
-
-    it('ne devrait pas logguer si confirmation refusée', () => {
-      spyOn(window, 'confirm').and.returnValue(false);
-      spyOn(console, 'log');
-      component.supprimerCompte();
-      expect(console.log).not.toHaveBeenCalled();
-    });
-  });
-
-  // ─────────────────────────────────────────────
-  // 9. HISTORIQUE
-  // ─────────────────────────────────────────────
-  describe('historiqueColis', () => {
-    it('devrait avoir 3 entrées', () => {
-      expect(component.historiqueColis.length).toBe(3);
-    });
-
-    it('devrait contenir une entrée avec statut "annulé"', () => {
-      expect(component.historiqueColis.filter(h => h.statut === 'annulé').length).toBe(1);
-    });
-
-    it('chaque entrée doit avoir les champs requis', () => {
-      component.historiqueColis.forEach(h => {
-        expect(h.id).toBeDefined();
-        expect(h.description).toBeDefined();
-        expect(h.poids).toBeDefined();
-        expect(h.date).toBeDefined();
-        expect(h.statut).toBeDefined();
-      });
+  describe('notifications', () => {
+    it('devrait initialiser les notifications', () => {
+      expect(component.notifications).toBeDefined();
     });
   });
 });

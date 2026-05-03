@@ -26,7 +26,6 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   // ── Détails colis ──────────────────────────────────────
   showDetailsModal: boolean = false;
   colisSelectionne: any = null;
-  nouveauStatut: string = '';
 
   // ── Clients ────────────────────────────────────────────
   clients: any[] = [];
@@ -41,21 +40,14 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   // ── Stats ──────────────────────────────────────────────
   stats = { attente: 0, ramasse: 0, en_route: 0, livre: 0 };
 
-  // ── Profil ─────────────────────────────────────────────
-  profil = { nom: 'yosra boughattas', email: 'user@example.com', telephone: '+216 20 123 456' };
 
-  // ── Paramètres généraux ────────────────────────────────
-  parametres = {
-    notifEmail: true,
-    notifSms: true,
-    notifPush: true,
-    langue: 'fr',
-    auth2fa: false
-  };
+  // ── Notifications ──────────────────────────────────────
+  notifications: any[] = [];
+  unreadNotifCount: number = 0;
 
-  // ── Historique ─────────────────────────────────────────
-  // Contient TOUTES les expéditions (y compris annulées) — jamais vidé
-  historiqueColis: any[] = [];
+  // ── Support ───────────────────────────────────────────
+  showSupportModal: boolean = false;
+  supportTicket = { email: '', message: '' };
 
   // ── Charts ─────────────────────────────────────────────
   private lineChart: Chart | null = null;
@@ -68,10 +60,11 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   setMenu(menu: string): void {
     this.activeMenu = menu;
     if (menu === 'dashboard') {
-      // Détruire les anciens charts et programmer leur recréation
-      // après que Angular ait rendu le DOM avec les canvas
       this.destroyCharts();
       this.chartsNeedRender = true;
+    }
+    if (menu === 'notifications') {
+      this.chargerNotifications();
     }
   }
 
@@ -79,7 +72,7 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.chargerColis();
     this.chargerClients();
-    // Programmer la création initiale des charts
+    this.chargerNotifications(); // Charger initialement pour le badge
     this.chartsNeedRender = true;
   }
 
@@ -167,19 +160,6 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
         this.colis = data;
         this.colisFiltres = [...data];
         this.calculerStats();
-        // Initialiser l'historique avec les données du serveur
-        // On ajoute les colis qui ne sont pas encore dans l'historique
-        data.forEach(c => {
-          if (!this.historiqueColis.find(h => h.id === c.id)) {
-            this.historiqueColis.push({
-              id: c.id,
-              description: c.description,
-              poids: c.poids,
-              date: c.date_creation ? c.date_creation.split('T')[0] : new Date().toISOString().split('T')[0],
-              statut: c.statut
-            });
-          }
-        });
         // Si on est sur le dashboard, rafraîchir les charts
         if (this.activeMenu === 'dashboard') {
           this.destroyCharts();
@@ -217,17 +197,10 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
         // Ajouter en tête de liste active
         this.colis.unshift(colisAjoute);
         this.filtrerColis();
-        // Ajouter dans l'historique
-        this.historiqueColis.unshift({
-          id: colisAjoute.id,
-          description: colisAjoute.description,
-          poids: colisAjoute.poids,
-          date: new Date().toISOString().split('T')[0],
-          statut: colisAjoute.statut
-        });
         this.calculerStats();
         alert("Colis ajouté avec succès !");
         this.showModal = false;
+        this.chargerNotifications(); // Rafraîchir pour voir la nouvelle notification
         this.newClient = { nom: '', email: '', telephone: '', adresse: '' }; // Reset
         this.newColis = { description: '', poids: 0, id_vendeur: 1, id_client: null };
       },
@@ -243,45 +216,45 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
       next: () => {
         // Retirer de la liste active
         this.colis = this.colis.filter(x => x.id !== c.id);
-        // Retirer également de l'historique local pour la cohérence
-        this.historiqueColis = this.historiqueColis.filter(x => x.id !== c.id);
 
         this.filtrerColis();
         this.calculerStats();
+        this.chargerNotifications();
       },
       error: (err) => console.error('Erreur suppression:', err)
     });
   }
 
-  // ── Détails & changement de statut ────────────────────
+  // ── Détails ───────────────────────────────────────────
   ouvrirDetailsModal(c: any): void {
     this.colisSelectionne = { ...c };
-    this.nouveauStatut = c.statut;
     this.showDetailsModal = true;
   }
 
-  changerStatut(): void {
-    if (!this.colisSelectionne || !this.nouveauStatut) return;
 
-    this.vendeurService.changerStatutColis(this.colisSelectionne.id, this.nouveauStatut).subscribe({
-      next: () => {
-        // Mettre à jour dans la liste active
-        const colisLocal = this.colis.find(c => c.id === this.colisSelectionne.id);
-        if (colisLocal) colisLocal.statut = this.nouveauStatut;
-        // Mettre à jour dans l'historique
-        const inHisto = this.historiqueColis.find(h => h.id === this.colisSelectionne.id);
-        if (inHisto) inHisto.statut = this.nouveauStatut;
-
-        this.filtrerColis();
-        this.calculerStats();
-        this.showDetailsModal = false;
-        this.colisSelectionne = null;
+  // ── Clients ────────────────────────────────────────────
+  // ── Notifications ──────────────────────────────────────
+  chargerNotifications(): void {
+    // Utilise l'id_user 2 qui correspond au vendeur id_vendeur 1 dans la DB
+    this.vendeurService.getNotifications(2).subscribe({
+      next: (data) => {
+        this.notifications = data;
+        this.unreadNotifCount = data.filter(n => !n.lu).length;
       },
-      error: (err) => console.error('Erreur changement statut:', err)
+      error: (err) => console.error('Erreur notifications:', err)
     });
   }
 
-  // ── Clients ────────────────────────────────────────────
+  marquerCommeLue(n: any): void {
+    if (n.lu) return;
+    this.vendeurService.marquerNotificationLue(n.id_notification).subscribe({
+      next: () => {
+        n.lu = 1;
+        this.unreadNotifCount = this.notifications.filter(x => !x.lu).length;
+      }
+    });
+  }
+
   chargerClients(): void {
     this.vendeurService.getClients().subscribe({
       next: (data) => {
@@ -386,19 +359,35 @@ export class DashboardVendeurComponent implements OnInit, AfterViewChecked {
     this.filtrerColis();
   }
 
-  // ── Paramètres ─────────────────────────────────────────
-  enregistrerModifications(): void {
-    console.log('Modifications enregistrées', this.profil);
+
+  // ── Support ────────────────────────────────────────────
+  ouvrirSupportModal(): void {
+    this.supportTicket = { email: '', message: '' };
+    this.showSupportModal = true;
   }
 
-  ouvrirChangerMotDePasse(): void {
-    // TODO: brancher sur un vrai modal ou route dédiée
-    alert('Fonctionnalité à implémenter : changement de mot de passe.');
-  }
-
-  supprimerCompte(): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')) {
-      console.log('Compte supprimé');
+  envoyerSupportTicket(): void {
+    if (!this.supportTicket.message.trim() || !this.supportTicket.email.trim()) {
+      alert("Veuillez remplir votre email et votre message.");
+      return;
     }
+
+    const data = {
+      id_vendeur: 1, // Id statique pour le moment
+      email: this.supportTicket.email,
+      message: this.supportTicket.message
+    };
+
+    this.vendeurService.envoyerTicketSupport(data).subscribe({
+      next: (res) => {
+        alert(res.message);
+        this.showSupportModal = false;
+        this.chargerNotifications(); // Notifier l'envoi ? (Optionnel)
+      },
+      error: (err) => {
+        console.error('Erreur support:', err);
+        alert("Une erreur est survenue lors de l'envoi.");
+      }
+    });
   }
 }
