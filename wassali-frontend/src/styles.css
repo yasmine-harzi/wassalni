@@ -1,1 +1,41 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Theme Variables */
+:root {
+  /* Ultra Clean Palette */
+  --bg-app: #f8fafc;
+  --bg-card: #ffffff;
+  
+  /* Slate Dark Theme for Sidebar */
+  --sidebar-bg: #0f172a;
+  --sidebar-text: #94a3b8;
+  --sidebar-hover: rgba(255, 255, 255, 0.05);
+  --sidebar-active: rgba(255, 255, 255, 0.1);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+
+  /* Vibrant Accents */
+  --accent-primary: #4f46e5;   /* Indigo 600 */
+  --accent-hover: #4338ca;     /* Indigo 700 */
+  --accent-light: #e0e7ff;     /* Indigo 100 */
+  --accent-glow: rgba(79, 70, 229, 0.35);
+
+  /* Typography Colors */
+  --text-main: #0f172a;        /* Slate 900 */
+  --text-secondary: #475569;   /* Slate 600 */
+  --text-muted: #94a3b8;       /* Slate 400 */
+  
+  /* UI Elements */
+  --border-color: #e2e8f0;     /* Slate 200 */
+  --input-bg: #f8fafc;
+  
+  /* High-end Shadows */
+  --shadow-card: 0 10px 40px -10px rgba(15, 23, 42, 0.06), 0 4px 10px -4px rgba(15, 23, 42, 0.04);
+  --shadow-float: 0 20px 40px -15px rgba(79, 70, 229, 0.2);
+  --shadow-btn: 0 8px 16px -4px rgba(79, 70, 229, 0.3);
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-app);
+}

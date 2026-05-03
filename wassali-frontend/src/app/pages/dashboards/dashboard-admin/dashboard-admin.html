@@ -1,0 +1,331 @@
+<div class="app-layout">
+  
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>⚙️ ADMIN</h1>
+    </div>
+    
+    <nav class="menu-items">
+      <a [class.active]="activeMenu === 'vendeurs'" (click)="changerMenu('vendeurs')">
+        🏪 Vendeurs
+      </a>
+      <a [class.active]="activeMenu === 'coursiers'" (click)="changerMenu('coursiers')">
+        🚚 Coursiers
+      </a>
+      <a [class.active]="activeMenu === 'zones'" (click)="changerMenu('zones')">
+        🗺️ Zones de livraison
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="logout-btn" (click)="deconnexion()">🚪 Déconnexion</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    
+    <header class="dashboard-header">
+      <div class="header-content">
+        <h2>Bienvenue, <span>{{ admin?.name }}</span> 👋</h2>
+        <p>Gérez les vendeurs, les coursiers et les zones de livraison.</p>
+      </div>
+    </header>
+
+    <!-- SECTION VENDEURS -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'vendeurs'">
+      <section class="management-section">
+        <div class="section-header">
+          <h3>🏪 Gestion des Vendeurs</h3>
+          <button class="btn-primary" (click)="openAddVendeurModal()">+ Ajouter un vendeur</button>
+        </div>
+
+        <div class="table-container">
+          <table class="management-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (vendeur of vendeurs; track vendeur.id) {
+                <tr>
+                  <td># {{ vendeur.id }}</td>
+                  <td>{{ vendeur.nom }}</td>
+                  <td>{{ vendeur.email }}</td>
+                  <td>{{ vendeur.phone }}</td>
+                  <td>
+                    <span class="badge" [class]="vendeur.status">
+                      {{ vendeur.status === 'actif' ? '✅ Actif' : '🔒 Suspendu' }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn-sm btn-toggle" (click)="toggleVendeurStatus(vendeur)">
+                      {{ vendeur.status === 'actif' ? 'Suspendre' : 'Activer' }}
+                    </button>
+                    <button class="btn-sm btn-danger" (click)="deleteVendeur(vendeur)">🗑️ Supprimer</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION COURSIERS -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'coursiers'">
+      <section class="management-section">
+        <div class="section-header">
+          <h3>🚚 Gestion des Coursiers</h3>
+          <button class="btn-primary" (click)="openAddCoursierModal()">+ Ajouter un coursier</button>
+        </div>
+
+        <div class="table-container">
+          <table class="management-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Zone assignée</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (coursier of coursiers; track coursier.id) {
+                <tr>
+                  <td># {{ coursier.id }}</td>
+                  <td>{{ coursier.nom }}</td>
+                  <td>{{ coursier.email }}</td>
+                  <td>{{ coursier.phone }}</td>
+                  <td>
+                    <span class="zone-badge">🗺️ {{ coursier.zone }}</span>
+                  </td>
+                  <td>
+                    <span class="badge" [class]="coursier.status">
+                      {{ coursier.status === 'actif' ? '✅ Actif' : '⏸️ Inactif' }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn-sm btn-info" (click)="openEditZoneModal(coursier)">📍 Zone</button>
+                    <button class="btn-sm btn-toggle" (click)="toggleCoursierStatus(coursier)">
+                      {{ coursier.status === 'actif' ? 'Désactiver' : 'Activer' }}
+                    </button>
+                    <button class="btn-sm btn-danger" (click)="deleteCoursier(coursier)">🗑️ Supprimer</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION ZONES -->
+    <div class="dashboard-grid" *ngIf="activeMenu === 'zones'">
+      <section class="management-section">
+        <div class="section-header">
+          <h3>🗺️ Zones de Livraison</h3>
+        </div>
+
+        <div class="zones-container">
+          <div class="zones-list">
+            <h4>Zones disponibles ({{ zonesDisponibles.length }})</h4>
+            <div class="zone-cards">
+              @for (zone of zonesDisponibles; track zone.id) {
+                <div class="zone-card">
+                  <div class="zone-info">
+                    <span class="zone-name">{{ zone.nom }}</span>
+                    <small class="zone-count">
+                      {{ getCoursierCountByZone(zone) }} coursier(s)
+                    </small>
+                  </div>
+                  <button class="btn-sm btn-danger" (click)="deleteZone(zone)">🗑️</button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="zones-stats">
+            <div class="stat-card">
+              <span class="stat-number">{{ zonesDisponibles.length }}</span>
+              <span class="stat-label">Zones totales</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">{{ coursiers.length }}</span>
+              <span class="stat-label">Coursiers assignés</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">{{ vendeurs.length }}</span>
+              <span class="stat-label">Vendeurs enregistrés</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL AJOUTER VENDEUR -->
+@if (showVendeurModal) {
+  <div class="modal-overlay" (click)="closeVendeurModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Ajouter un nouveau vendeur</h2>
+        <button class="close-btn" (click)="closeVendeurModal()">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="vendeurNom">Nom de la boutique :</label>
+          <input 
+            type="text" 
+            id="vendeurNom" 
+            [(ngModel)]="newVendeur.nom"
+            placeholder="Ex: Boutique Yasmine"
+            class="form-input"
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="vendeurEmail">Email :</label>
+          <input 
+            type="email" 
+            id="vendeurEmail" 
+            [(ngModel)]="newVendeur.email"
+            placeholder="email@boutique.com"
+            class="form-input"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="vendeurPhone">Téléphone :</label>
+          <input 
+            type="tel" 
+            id="vendeurPhone" 
+            [(ngModel)]="newVendeur.phone"
+            placeholder="+216 XX XXX XXX"
+            class="form-input"
+          />
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-outline" (click)="closeVendeurModal()">Annuler</button>
+        <button class="btn-primary" (click)="addVendeur()">Ajouter</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL AJOUTER COURSIER -->
+@if (showCoursierModal) {
+  <div class="modal-overlay" (click)="closeCoursierModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Ajouter un nouveau coursier</h2>
+        <button class="close-btn" (click)="closeCoursierModal()">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="coursierNom">Nom complet :</label>
+          <input 
+            type="text" 
+            id="coursierNom" 
+            [(ngModel)]="newCoursier.nom"
+            placeholder="Ex: Ali Mohamed"
+            class="form-input"
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="coursierEmail">Email :</label>
+          <input 
+            type="email" 
+            id="coursierEmail" 
+            [(ngModel)]="newCoursier.email"
+            placeholder="email@livraison.com"
+            class="form-input"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="coursierPhone">Téléphone :</label>
+          <input 
+            type="tel" 
+            id="coursierPhone" 
+            [(ngModel)]="newCoursier.phone"
+            placeholder="+216 XX XXX XXX"
+            class="form-input"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="coursierZone">Zone de livraison :</label>
+          <select 
+            id="coursierZone" 
+            [(ngModel)]="newCoursier.zone"
+            class="form-input"
+          >
+            <option value="">-- Sélectionner une zone --</option>
+            @for (zone of zonesDisponibles; track zone.id) {
+              <option [value]="zone.nom">{{ zone.nom }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-outline" (click)="closeCoursierModal()">Annuler</button>
+        <button class="btn-primary" (click)="addCoursier()">Ajouter</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL EDIT ZONE -->
+@if (showZoneModal) {
+  <div class="modal-overlay" (click)="closeZoneModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Affecter une zone de livraison</h2>
+        <button class="close-btn" (click)="closeZoneModal()">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Coursier :</label>
+          <p class="info-text">{{ editZoneCoursier.coursier?.nom }}</p>
+        </div>
+
+        <div class="form-group">
+          <label for="editZone">Zone actuelle :</label>
+          <select 
+            id="editZone" 
+            [(ngModel)]="editZoneCoursier.zone"
+            class="form-input"
+          >
+            <option value="">-- Sélectionner une zone --</option>
+            @for (zone of zonesDisponibles; track zone.id) {
+              <option [value]="zone.nom">{{ zone.nom }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-outline" (click)="closeZoneModal()">Annuler</button>
+        <button class="btn-primary" (click)="updateZone()">Mettre à jour</button>
+      </div>
+    </div>
+  </div>
+}

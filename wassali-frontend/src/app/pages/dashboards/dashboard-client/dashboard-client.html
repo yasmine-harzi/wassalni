@@ -1,1 +1,145 @@
-<p>dashboard-client works!</p>
+<div class="app-layout">
+  
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>WASSALI</h1>
+    </div>
+    
+    <nav class="menu-items">
+      <a [class.active]="activeMenu === 'colis'" (click)="changerMenu('colis')">
+        📦 Mes Colis
+      </a>
+      <a [class.active]="activeMenu === 'compte'" (click)="changerMenu('compte')">
+        ⚙️ Gérer mon compte
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="logout-btn" (click)="deconnexion()">🚪 Déconnexion</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    
+    <header class="dashboard-header">
+      <div class="header-content">
+        <h2>Bienvenue, <span>{{ user?.name }}</span> 👋</h2>
+        <p>Suivez vos livraisons en temps réel et gérez vos réceptions.</p>
+      </div>
+    </header>
+
+    <div class="dashboard-grid" *ngIf="activeMenu === 'colis'">
+      
+      <section class="colis-section">
+        <h3>Mes Colis ({{colisListe.length}})</h3>
+        
+        <div class="colis-list">
+          @for (colis of colisListe; track colis.id) {
+            <div class="colis-card" [class.active]="colis.statut === 'en_livraison'">
+              <div class="colis-header">
+                <h4>{{ colis.id }}</h4>
+                <span class="badge" [class]="colis.statut">
+                  {{ getStatusLabel(colis.statut) }}
+                </span>
+              </div>
+              
+              <div class="colis-details">
+                <p><strong>🏢 Vendeur :</strong> {{ colis.vendeur }}</p>
+                <p><strong>📅 Prévu le :</strong> {{ colis.dateEstimation }}</p>
+                <p><strong>⏰ Heure approx. :</strong> {{ colis.heureEstimation }}</p>
+              </div>
+              
+              <div class="colis-actions">
+                @if (colis.statut !== 'livré') {
+                  <button class="btn-outline" (click)="reprogrammer(colis)">🗓️ Reprogrammer</button>
+                }
+                @if (colis.statut === 'en_livraison' || colis.statut === 'en_cours') {
+                  <button class="btn-primary" (click)="suivreSurCarte(colis)">📍 Suivi en direct</button>
+                }
+                @if (colis.statut === 'livré') {
+                  <button class="btn-disabled" disabled>✅ Livré</button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="map-section">
+        <h3>📍 Carte en temps réel</h3>
+        <div class="map-container" #mapContainer>
+          <div id="map" class="map"></div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="account-section" *ngIf="activeMenu === 'compte'">
+      <section class="account-management">
+        <h3>⚙️ Gérer mon compte</h3>
+        <div class="account-info">
+          <div class="info-group">
+            <label>Nom :</label>
+            <input type="text" [(ngModel)]="editNom" class="form-input" placeholder="Votre nom">
+          </div>
+
+          <div class="info-group">
+            <label>Prénom :</label>
+            <input type="text" [(ngModel)]="editPrenom" class="form-input" placeholder="Votre prénom">
+          </div>
+          
+          <div class="info-group">
+            <label>Email :</label>
+            <input type="email" [(ngModel)]="editEmail" class="form-input" placeholder="votre.email@example.com">
+          </div>
+          
+          <div class="info-group">
+            <label>Téléphone :</label>
+            <input type="tel" [(ngModel)]="editPhone" class="form-input" placeholder="+216 XX XXX XXX">
+          </div>
+          
+          <div class="info-group">
+            <label>Adresse :</label>
+            <input type="text" [(ngModel)]="editAdresse" class="form-input" placeholder="Votre adresse">
+          </div>
+        </div>
+        
+        <div class="account-actions">
+          <button class="btn-primary" (click)="saveAccount()">💾 Sauvegarder les modifications</button>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- MODALE REPROGRAMMATION -->
+@if (showReprogrammerModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Reprogrammer le colis</h2>
+        <button class="close-btn" (click)="closeModal()">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <p><strong>Colis :</strong> {{ selectedColis?.id }}</p>
+        <p><strong>Vendeur :</strong> {{ selectedColis?.vendeur }}</p>
+        
+        <div class="form-group">
+          <label for="newDate">Nouvelle date souhaitée :</label>
+          <input 
+            type="date" 
+            id="newDate" 
+            [(ngModel)]="newDateReprogrammation"
+            class="form-input"
+          />
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-outline" (click)="closeModal()">Annuler</button>
+        <button class="btn-primary" (click)="confirmReprogrammation()">Confirmer</button>
+      </div>
+    </div>
+  </div>
+}
